@@ -31,13 +31,13 @@ $(OUTPUT_DIR)/$(SHORT_NAME).pdf: $(SRC_DIR)/main.tex
 	$(TEX) $(SRC_DIR)/main.tex
 
 $(SHORT_NAME)_prev: $(SHORT_NAME)
-	$(TEX) $(SOURCE_DIR)/main.tex -pv
+	$(TEX) $(SRC_DIR)/main.tex -pv
 
 # Miscelaneous
 ##############################
 
 clean:
-	rm $(OUTPUT_DIR)/*{aux,log,toc}
+	rm $(OUTPUT_DIR)/*{aux,log,toc,out,fls,lof,fdb*}
 
 clean_all:
 	rm $(OUTPUT_DIR)/*
