@@ -1,16 +1,11 @@
-\documentclass[12pt,a4paper,twoside,titlepage]{report}
+\documentclass[12pt,a4paper,twoside,titlepage]{article}
 \usepackage{tex/mi_estilo}
 
 \begin{document}
-	\pagenumbering{arabic}
 	\input{tex/c0_cover_page}
 	\tableofcontents
 	\listoffigures
-	\input{tex/c1_objetives}
-	\input{tex/c2_materials}
-	\input{tex/c3_equipment}
-	\input{tex/c4_experimental_procedure}
-	\input{tex/c5_results_and_discussion}
-	\input{tex/c6_conclusions.tex}
+	\newpage
+	\input{tex/content}
 	\input{tex/bibliography}
 \end{document}
