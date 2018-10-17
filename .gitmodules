@@ -1,0 +1,3 @@
+[submodule "aerolabs/bimug_drone"]
+	path = aerolabs/bimug_drone
+	url = git@github.com:cmolinaord/bimug_drone.git
