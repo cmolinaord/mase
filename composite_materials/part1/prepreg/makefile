@@ -1,8 +1,8 @@
 OUTPUT_DIR = pdf
 SRC_DIR = tex
 TEX = latexmk -cd- -pdf -jobname=$(OUTPUT_DIR)/$(NAME) --shell-escape
-NAME = document_name
-BIBNAME = bib_name
+NAME = prepregs
+BIBNAME = prepregs
 
 .PHONY: all $(NAME) $(NAME)_prev clean clean_all count_words debug_label_chapters debug_warnings
 .SILENT: all $(NAME)_prev count_words debug_label_chapters debug_warnings debug_figures debug_figures_unused
