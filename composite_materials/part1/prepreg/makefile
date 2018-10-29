@@ -50,7 +50,7 @@ update_bibtex:
 	#   For example: {\_} or {\&} will be replaced by _ and &
 	# Also lines starting with "file" are deleted
 	echo "Update BibTeX from Mendeley database"
-	sed '/url/s/{\\\(.\)}/\1/g;/^file/d' ~/.mendeley/$(BIBNAME).bib > doc/$(BIBNAME).bib
+	sed '/url/s/{\\\(.\)}/\1/g;/^file/d' ~/.mendeley/Composite\ materials-prepregs.bib > doc/$(BIBNAME).bib
 
 debug_label_chapters:
 	echo "Mostrando capitulos que no tienen ningun /label"
