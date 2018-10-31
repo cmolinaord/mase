@@ -18,7 +18,7 @@ point, 165ºC, and injected into two molds prepared for the tensile testing.\\
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=0.8\textwidth]{img/1_Unreinforced_PP.jpg}
-	\caption[short caption]{Unreinforced PP sample after test}
+	\caption[PP]{Unreinforced PP sample after test}
 	\label{fig:unreinforced_PP}
 \end{figure}
 
@@ -32,7 +32,7 @@ all together, and inject it inside the mold.\\
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=0.8\textwidth]{img/2_PP_short_glass_fibre.jpg}
-	\caption[short caption]{PP reinforced with 30\% weight short glass fibers}
+	\caption[PP + 30wt]{PP reinforced with 30\% weight short glass fibers}
 	\label{fig:PP30}
 \end{figure}
 
@@ -47,7 +47,7 @@ direcction, the test were performed in both transversal and machine direction.\\
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=0.8\textwidth]{img/3_Twintex.jpg}
-	\caption[short caption]{Twintex}
+	\caption[Twintex]{Twintex}
 	\label{fig:twintex}
 \end{figure}
 
@@ -79,12 +79,114 @@ sample previously mentioned.\\
 	clamp of 10 mm/s
 	\item Once it breaks or when we consider it is enough time for having
 	optimal results, the machine is turned off, the clamps opened and the
-	laminated thermoset-based polyme composite is removed.
+	laminated thermoset-based polymer composite is removed.
 	\item Repeat steps above for the thermoplastic-based polymer composite.
 \end{enumerate}
 
 \section{Results and discussion}
 
+From the experimental session performed was obtained data of the load, time, extension, tension and deformation of each test performed.\\
+With this data is computed and plotted the values of stress and strain, figures
+\ref{fig:upp}, \ref{fig:pp30}, \ref{fig:twintex_MD} and \ref{fig:twintex_TD}.\\
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.8\textwidth]{img/UPP.png}
+	\caption{Unreinforced PP Stress/strain curve}
+	\label{fig:upp}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.8\textwidth]{img/PP30.png}
+	\caption{PP + 30\% weight Glass fiber Stress/strain curve}
+	\label{fig:pp30}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.8\textwidth]{img/twintex_MD.png}
+	\caption{Twintex MD Stress/strain curve}
+	\label{fig:twintex_MD}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.8\textwidth]{img/twintex_TD.png}
+	\caption{Twintex TD Stress/strain curve}
+	\label{fig:twintex_TD}
+\end{figure}
 
 
+From this stress-strain curves the following properties were obtained:\\
+
+\begin{itemize}
+    \item Young Module: curve fitting of the elastic region was performed in order to obtain the slope.
+    \item Yield stress: stress value at which ends the elastic region
+    \item Stress to rupture: stress value at the last recorded point before break
+    \item Strain to rupture: strain value at the last recorded point before break
+    \item Energy absorbed: area below the stress-strain curve
+\end{itemize}{}
+
+In table \ref{valuescurve} are shown the experimental values obtained for all samples tested.
+
+\begin{table}[]
+\begin{tabular}{lcccc}
+\hline
+\multicolumn{1}{c}{}                                                               & \textbf{Virgin \footnotesize{PP}} & \textbf{\footnotesize{PP}} + \textbf{30 wt} & \footnotesize\textbf{TWINTEX(MD)} & \footnotesize\textbf{TWINTEX(TD)} \\
+\hline
+\hline
+\textbf{\begin{tabular}[c]{@{}l@{}}Young modulus \\ {[}\footnotesize{kPa}{]}\end{tabular}}                                                 & 843 $\pm$ 31          & 1870 $\pm$7            & 4223 $\pm$11             & 4990$\pm$21              \\ \hline
+\textbf{Yield stress}                                                              & 0.01               & 0.025               & 0.02                  & 0.003                 \\ \hline
+\textbf{\begin{tabular}[c]{@{}l@{}}Stress to rupture \\ {[}\footnotesize{kPa}{]}\end{tabular}}                                               & 20.5               & 79.78               & 152                   & 158                   \\ \hline
+\textbf{Strain to rupture}                                                         & 1.224              & 0.0766              & 0.045                 & 0.045                 \\ \hline
+\textbf{\begin{tabular}[c]{@{}l@{}}Energy absorbed \\ \footnotesize{(till rupture)}\end{tabular}} & 26997              & 4248,8              & 3998,7                & 3561,7                \\ \hline
+\end{tabular}
+\caption{Experimental values obtained}
+\label{valuescurve}
+\end{table}
+
+On the other side, to compute the theoretical values of the young module is used the rule of mixtures. This rule is valid for loads on the fibre axis as:\\
+
+\begin{equation}
+E_c=f\cdot E_f + (1-f)E_m
+\end{equation}
+
+And for loads on the perpendicular fiber axis as:\\
+
+\begin{equation}
+E_c=\left(\dfrac{f}{E_f}+\dfrac{1-f}{E_m}\right)^{-1}
+\end{equation}
+
+Table \ref{tab:youngmodulus} shows the both the experimental and theoretical values obtained for each sample.\\
+
+\begin{table}[]
+\centering
+\textbf{Young Modulus {[}MPa{]}} \\
+\begin{tabular}{lcc}
+\hline
+\multicolumn{1}{c}{}  & \multicolumn{1}{l}{\textbf{Theoretical}} & \textbf{Experimental} \\ \hline
+\textbf{Glass fibre} & 78510 & -\\ \hline
+\textbf{Virgin PP} & 1300 & 0.843  $\pm$ 0.031 \\ \hline
+\textbf{PP + 30wt} & 24460 & 1.870 $\pm$ 0.007 \\ \hline
+\textbf{TWINTEX (MD)} & 47630 & 4.223 $\pm$ 0.011 \\ \hline
+\textbf{TWINTEX (TD)} & 3120 & 4.990 $\pm$ 0.021 \\ \hline
+\end{tabular}
+\caption{Young modulus, experimental and theoretical results}
+\label{tab:youngmodulus}
+\end{table}
+
+\newpage
 \section{Conclusion}
+
+In this laboratory practice various samples of polypropylene have been tested and their stress-strain curves analyzed.\\
+
+During this analysis, it can be observed that Young Modulus increases with the volume of fibre increases. This is expected, as fibre glass give stiffness to the polypropylene matrix, reducing it's elasticity.\\
+
+Another sign of this stiffness increase, is the strain to rupture, that decreases along with the fibre volume.\\
+
+Comparing the MD and TD TWINTEX tests, the only value that changes significantly is the yield stress. This means that for the same elastic modulus, the elastic region is smaller. This decrease on elasticity is on the TD, as the fibres are on the perpendicular axis of the load.\\
+
+Comparing the experimental and theoretical values of the Young modulus,it can be observed are significantly different from the ones obtained theoretically. This could be due to errors on calculations since the experimental procedure was correctly performed.
+
+After some analysis of the calculus no errors were found and it was not possible to determine the origin of the discrepancies.
