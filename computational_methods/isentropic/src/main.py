@@ -9,12 +9,12 @@ ITERMAX = int(args[1])
 
 # Computational parameters
 delta = 0.004
-nx = 200
-ny = 100
+nx = 5
+ny = 5
 iter = 0
 
 # Domain parameters (m)
-L = 20
+L = 10
 H = 10
 
 # Physical constants
@@ -39,7 +39,8 @@ p = np.zeros([ny,nx]) + p0
 p1 = np.zeros([ny,nx]) + p0
 T = np.zeros([ny,nx]) + T0
 T1 = np.zeros([ny,nx]) + T0
-rho = np.zeros([ny,nx]) + rho0
+rho = np.zeros([ny,nx]) + 2.7
+rho1 = np.zeros([ny,nx]) + 1.5
 Vx = np.zeros([ny,nx])
 Vy = np.zeros([ny,nx])
 V = np.zeros([ny,nx])
@@ -55,12 +56,12 @@ radius = min(L,H)/5
 
 Solid, dx, dy = tools.create_mesh(L, H, nx, ny)
 Solid[:] = False
-for i in range(0,ny):
-	for j in range(0,nx):
-		dist = np.sqrt((x[j]-center[0])**2 + (y[i]-center[1])**2)
-		if dist < radius:
-			Solid[i,j] = True
-			rho[i,j] = 0
+#for i in range(0,ny):
+#	for j in range(0,nx):
+#		dist = np.sqrt((x[j]-center[0])**2 + (y[i]-center[1])**2)
+#		if dist < radius:
+#			Solid[i,j] = True
+#			rho[i,j] = 0
 
 # Boundary conditions
 phi[0, :] = 1
@@ -72,7 +73,7 @@ while incr > delta and iter < ITERMAX:
 	iter += 1
 	for i in range(0, ny): # rows
 		for j in range (0, nx): # columns
-			phi1[i,j], vn, vs, vw, ve = tools.calc_a(phi, rho, rho0, i, j, nx, ny, dx, dy, Vinput, Solid)
+			phi1[i,j], vn, vs, vw, ve = tools.calc_a(phi, rho1, rho, i, j, nx, ny, dx, dy, Vinput, Solid)
 			Vx[i,j] = 0.5*(vn + vs)
 			Vy[i,j] = 0.5*(ve + vw)
 			V1[i,j]	= tools.np.sqrt(Vx[i,j]**2 + Vx[i,j]**2)
@@ -80,8 +81,14 @@ while incr > delta and iter < ITERMAX:
 			T1[i,j] = T[i,j] + 0.5*(V[i,j]**2 - V1[i,j]**2)/c_p
 			# Isentropic condition (pressure calculated)
 			p1[i,j] = p[i,j] * (T1[i,j]/T[i,j])**gamma_exp
-			rho[i,j] = tools.density(p1[i,j], T1[i,j], R)
-	#phi1[:,0] = 1
+	print("rho")
+	print(rho)
+	rho = rho1
+	print("rho = rho1")
+	print(rho)
+	rho1 = tools.density(p1, T1, R)
+	print("rho1 (new)")
+	print(rho1)
 	incr = np.max(np.abs(phi1 - phi))
 	V = V1
 	T = T1
