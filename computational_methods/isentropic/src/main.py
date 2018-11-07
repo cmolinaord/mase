@@ -9,8 +9,8 @@ ITERMAX = int(args[1])
 
 # Computational parameters
 delta = 0.004
-nx = 5
-ny = 5
+nx = 20
+ny = 20
 iter = 0
 
 # Domain parameters (m)
@@ -33,7 +33,7 @@ Vinput = 5
 
 # Creation of domain
 phi, dx, dy = tools.create_mesh(L, H, nx, ny) # Create a null matrix for phi
-phi = np.zeros([ny,nx]) + 0.1
+phi = np.zeros([ny,nx]) -0.1 + 0.2*np.random.random([ny,nx])
 phi1 = np.zeros([ny,nx])
 p = np.zeros([ny,nx]) + p0
 p1 = np.zeros([ny,nx]) + p0
@@ -56,15 +56,16 @@ radius = min(L,H)/5
 
 Solid, dx, dy = tools.create_mesh(L, H, nx, ny)
 Solid[:] = False
-#for i in range(0,ny):
-#	for j in range(0,nx):
-#		dist = np.sqrt((x[j]-center[0])**2 + (y[i]-center[1])**2)
-#		if dist < radius:
-#			Solid[i,j] = True
-#			rho[i,j] = 0
-
-# Boundary conditions
-#phi[0, :] = 1
+# Defined walls in North and South
+Solid[0,:] = True
+Solid[-1,:] = True
+# Defined cylinder in the middle
+for i in range(0,ny):
+	for j in range(0,nx):
+		dist = np.sqrt((x[j]-center[0])**2 + (y[i]-center[1])**2)
+		if dist < radius:
+			Solid[i,j] = True
+			rho[i,j] = 0
 
 # Iteration
 incr = 0.5
@@ -72,23 +73,23 @@ incr = 0.5
 while incr > delta and iter < ITERMAX:
 	iter += 1
 	for i in range(1, ny-1): # rows
-		for j in range (0, nx): # columns
-			phi1[i,j], vn, vs, vw, ve = tools.calc_a(phi, rho1, rho, i, j, nx, ny, dx, dy, Vinput, Solid)
+		for j in range (1, nx-1): # columns
+			phi1[i,j], vn, vs, vw, ve = tools.calc_phi(phi, rho1, rho, i, j, nx, ny, dx, dy, Vinput, Solid)
 			Vx[i,j] = 0.5*(vn + vs)
 			Vy[i,j] = 0.5*(ve + vw)
-			V1[i,j]	= tools.np.sqrt(Vx[i,j]**2 + Vx[i,j]**2)
+			V1[i,j]	= np.sqrt(Vx[i,j]**2 + Vx[i,j]**2)
 			# Energy conservation (calculated temperature)
 			T1[i,j] = T[i,j] + 0.5*(V[i,j]**2 - V1[i,j]**2)/c_p
 			# Isentropic condition (pressure calculated)
 			p1[i,j] = p[i,j] * (T1[i,j]/T[i,j])**gamma_exp
-	print("rho")
-	print(rho)
+
 	rho = rho1
-	print("rho = rho1")
-	print(rho)
+
 	rho1 = tools.density(p1, T1, R)
-	print("rho1 (new)")
-	print(rho1)
+	print("phi1")
+	print(phi1)
+	print("phi")
+	print(phi)
 	incr = np.max(np.abs(phi1 - phi))
 	V = V1
 	T = T1
@@ -106,6 +107,16 @@ fig1.colorbar(im, ax=ax1)
 circ = Circle(center, radius)
 ax1.add_patch(circ)
 ax1.axis("equal")
+
+fig2 = plt.figure()
+ax2 = fig2.gca()
+ax2.streamplot(xv, yv, Vx, Vy, density=[0.5, 1])
+im = ax2.pcolormesh(xv, yv, rho, cmap=cmap)
+fig2.colorbar(im, ax=ax2)
+circ = Circle(center, radius)
+ax2.add_patch(circ)
+ax2.axis("equal")
+
 
 fig3 = plt.figure()
 ax3 = fig3.gca()

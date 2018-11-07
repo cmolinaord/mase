@@ -12,43 +12,17 @@ def density(p, T, R):
 	rho = p / T / R
 	return rho
 
-def calc_a(phi, rho, rho0, i, j, nx, ny, dx, dy, Vin, Solid):
+def calc_phi(phi, rho, rho0, i, j, nx, ny, dx, dy, Vin, Solid):
 	print("i=%i, j=%i"%(i,j))
 	print("==========")
-	# North border
-	if i == 0:
-		aN = 0
-		phiN = 0
-	else:
-		aN = ratio_rho(rho0, rho, i, j, "N", dx, dy, Solid) * dx/dy
-		phiN = phi[i-1,j]
-
-	# South border
-	if i == ny-1:
-		aS = 0
-		phiS = 0
-	else:
-		aS = ratio_rho(rho0, rho, i, j, "S", dx, dy, Solid) * dx/dy
-		phiS = phi[i+1,j]
-
-	# West border
-	if j == 0:
-		aW = 0
-		phiW = 0
-		if i != 0 and i != ny-1:
-			aN = Vin
-			aS = Vin
-	else:
-		aW = ratio_rho(rho0, rho, i, j, "W", dx, dy, Solid) * dy/dx
-		phiW = phi[i,j-1]
-
-	# East border
-	if j == nx-1:
-		aE = 0
-		phiE = 0
-	else:
-		aE = ratio_rho(rho0, rho, i, j, "E", dx, dy, Solid) * dy/dx
-		phiE = phi[i,j+1]
+	aN = ratio_rho(rho0, rho, i, j, "N", dx, dy, Solid) * dx/dy
+	aS = ratio_rho(rho0, rho, i, j, "S", dx, dy, Solid) * dx/dy
+	aW = ratio_rho(rho0, rho, i, j, "W", dx, dy, Solid) * dy/dx
+	aE = ratio_rho(rho0, rho, i, j, "E", dx, dy, Solid) * dy/dx
+	phiN = phi[i-1,j]
+	phiS = phi[i+1,j]
+	phiW = phi[i,j-1]
+	phiE = phi[i,j+1]
 
 	aP = aE + aW + aN + aS
 	print("a:")
@@ -56,22 +30,19 @@ def calc_a(phi, rho, rho0, i, j, nx, ny, dx, dy, Vin, Solid):
 	print("%1.1f\t%1.1f\t%1.1f" % (aW,aP,aE))
 	print("\t%1.1f" % aS)
 
-	#WARNING
-	# Check this
-	if aP == 0:
-		phiP = 0
-	else:
-		phiP = (aN*phiN + aS*phiS + aW*phiW + aE*phiE)/aP
+	phiP = (aN*phiN + aS*phiS + aW*phiW + aE*phiE)/aP
+
 	ve = (phiP-phiE)/dy * aE
 	vw = (phiW-phiP)/dy * aW
 	vn = (phiN-phiP)/dx * aN
 	vs = (phiP-phiS)/dx * aS
 
-	if j == 0:
-		aW = 0
-		phiW = 0
+	if j == 1:
+		phiP = phiW
 		vn = Vin
 		vs = Vin
+	elif j == nx-2:
+		phiP = phiE
 
 	print("phiP = %1.1f" % phiP)
 	print("v:")
