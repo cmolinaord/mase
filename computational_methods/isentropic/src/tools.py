@@ -25,12 +25,11 @@ def calc_phi(phi, rho, rho0, i, j, nx, ny, dx, dy, Vin, Solid):
 	phiE = phi[i,j+1]
 
 	aP = aE + aW + aN + aS
-	print("a:")
-	print("\t%1.1f" % aN)
-	print("%1.1f\t%1.1f\t%1.1f" % (aW,aP,aE))
-	print("\t%1.1f" % aS)
-
-	phiP = (aN*phiN + aS*phiS + aW*phiW + aE*phiE)/aP
+	# If fully surrounded by Solid
+	if aP == 0:
+		phiP = 0
+	else:
+		phiP = (aN*phiN + aS*phiS + aW*phiW + aE*phiE)/aP
 
 	ve = (phiP-phiE)/dy * aE
 	vw = (phiW-phiP)/dy * aW
@@ -45,11 +44,6 @@ def calc_phi(phi, rho, rho0, i, j, nx, ny, dx, dy, Vin, Solid):
 		phiP = phiE
 
 	print("phiP = %1.1f" % phiP)
-	print("v:")
-	print("\t%1.1f" % vn)
-	print("%1.1f\t\t%1.1f" % (vw,ve))
-	print("\t%1.1f" % vs)
-
 	return phiP, vn, vs, vw, ve
 
 def ratio_rho(rho0, rho, i, j, dir, dx, dy, Solid):
