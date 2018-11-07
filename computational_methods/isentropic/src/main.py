@@ -9,8 +9,8 @@ ITERMAX = int(args[1])
 
 # Computational parameters
 delta = 0.004
-nx = 20
-ny = 20
+nx = 50
+ny = 50
 iter = 0
 
 # Domain parameters (m)
@@ -33,15 +33,15 @@ Vinput = 5
 
 # Creation of domain
 phi, dx, dy = tools.create_mesh(L, H, nx, ny) # Create a null matrix for phi
-phi = np.zeros([ny,nx]) -0.1 + 0.2*np.random.random([ny,nx])
+phi = np.zeros([ny,nx]) -0.5 + np.random.random([ny,nx])
 phi1 = np.zeros([ny,nx])
 p = np.zeros([ny,nx]) + p0
 p1 = np.zeros([ny,nx]) + p0
 T = np.zeros([ny,nx]) + T0
 T1 = np.zeros([ny,nx]) + T0
-rho = np.zeros([ny,nx]) + 2.7
-rho1 = np.zeros([ny,nx]) + 1.5
-Vx = np.zeros([ny,nx])
+rho = np.ones([ny,nx])
+rho1 = np.ones([ny,nx])
+Vx = np.ones([ny,nx])
 Vy = np.zeros([ny,nx])
 V = np.zeros([ny,nx])
 V1 = np.ones([ny,nx])
@@ -52,13 +52,13 @@ xv, yv = np.meshgrid(x, y)
 
 # Solid objects
 center = [L/2, H/2]
-radius = min(L,H)/5
+radius = min(L,H)/6
 
 Solid, dx, dy = tools.create_mesh(L, H, nx, ny)
 Solid[:] = False
 # Defined walls in North and South
 Solid[0,:] = True
-Solid[-1,:] = True
+Solid[ny-1,:] = True
 # Defined cylinder in the middle
 for i in range(0,ny):
 	for j in range(0,nx):
@@ -67,6 +67,8 @@ for i in range(0,ny):
 			Solid[i,j] = True
 			rho[i,j] = 0
 
+phi[:,0] = 1
+
 # Iteration
 incr = 0.5
 
@@ -74,28 +76,30 @@ while incr > delta and iter < ITERMAX:
 	iter += 1
 	for i in range(1, ny-1): # rows
 		for j in range (1, nx-1): # columns
-			phi1[i,j], vn, vs, vw, ve = tools.calc_phi(phi, rho1, rho, i, j, nx, ny, dx, dy, Vinput, Solid)
-			Vx[i,j] = 0.5*(vn + vs)
-			Vy[i,j] = 0.5*(ve + vw)
+			phi1[i,j] = tools.calc_phi(phi, rho1, rho, i, j, nx, ny, dx, dy, Solid)
+	# Phi has changed (check is this would be the last iteration)
+	incr = np.max(np.abs(phi1 - phi))
+
+	for i in range(1, ny-1): # rows
+		for j in range (1, nx-1): # columns
+			Vx[i,j], Vy[i,j] = tools.calc_vel(phi1, rho, rho1, i, j, nx, ny, dx, dy, Solid, Vinput)
+
 			V1[i,j]	= np.sqrt(Vx[i,j]**2 + Vx[i,j]**2)
 			# Energy conservation (calculated temperature)
 			T1[i,j] = T[i,j] + 0.5*(V[i,j]**2 - V1[i,j]**2)/c_p
 			# Isentropic condition (pressure calculated)
 			p1[i,j] = p[i,j] * (T1[i,j]/T[i,j])**gamma_exp
 
-	rho = rho1
-
+	rho_old = rho
 	rho1 = tools.density(p1, T1, R)
-	print("phi1")
-	print(phi1)
-	print("phi")
-	print(phi)
-	incr = np.max(np.abs(phi1 - phi))
+	rho = rho_old
 	V = V1
 	T = T1
 	p = p1
 	phi = phi1
 	print("Iteration %i: maximum difference: %2.4e" %(iter, incr))
+
+print(rho1)
 
 cmap = plt.get_cmap('PiYG')
 
@@ -104,18 +108,20 @@ ax1 = fig1.gca()
 ax1.streamplot(xv, yv, Vx, Vy, density=[0.5, 1])
 im = ax1.pcolormesh(xv, yv, V, cmap=cmap)
 fig1.colorbar(im, ax=ax1)
-circ = Circle(center, radius)
+circ = Circle(center, radius, fill=False)
 ax1.add_patch(circ)
 ax1.axis("equal")
+plt.title("Velocity (m/s)")
 
 fig2 = plt.figure()
 ax2 = fig2.gca()
 ax2.streamplot(xv, yv, Vx, Vy, density=[0.5, 1])
-im = ax2.pcolormesh(xv, yv, rho, cmap=cmap)
+im = ax2.pcolormesh(xv, yv, rho1, cmap=cmap)
 fig2.colorbar(im, ax=ax2)
-circ = Circle(center, radius)
+circ = Circle(center, radius, fill=False)
 ax2.add_patch(circ)
 ax2.axis("equal")
+plt.title("Density")
 
 
 fig3 = plt.figure()

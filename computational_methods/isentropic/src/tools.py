@@ -12,9 +12,8 @@ def density(p, T, R):
 	rho = p / T / R
 	return rho
 
-def calc_phi(phi, rho, rho0, i, j, nx, ny, dx, dy, Vin, Solid):
-	print("i=%i, j=%i"%(i,j))
-	print("==========")
+def calc_phi(phi, rho, rho0, i, j, nx, ny, dx, dy, Solid):
+
 	aN = ratio_rho(rho0, rho, i, j, "N", dx, dy, Solid) * dx/dy
 	aS = ratio_rho(rho0, rho, i, j, "S", dx, dy, Solid) * dx/dy
 	aW = ratio_rho(rho0, rho, i, j, "W", dx, dy, Solid) * dy/dx
@@ -31,20 +30,35 @@ def calc_phi(phi, rho, rho0, i, j, nx, ny, dx, dy, Vin, Solid):
 	else:
 		phiP = (aN*phiN + aS*phiS + aW*phiW + aE*phiE)/aP
 
-	ve = (phiP-phiE)/dy * aE
-	vw = (phiW-phiP)/dy * aW
-	vn = (phiN-phiP)/dx * aN
-	vs = (phiP-phiS)/dx * aS
-
 	if j == 1:
 		phiP = phiW
-		vn = Vin
-		vs = Vin
 	elif j == nx-2:
 		phiP = phiE
 
-	print("phiP = %1.1f" % phiP)
-	return phiP, vn, vs, vw, ve
+	return phiP
+
+def calc_vel(phi, rho, rho1, i, j, nx, ny, dx, dy, Solid, Vin):
+	phiP = phi[i,j]
+	phiN = phi[i-1,j]
+	phiS = phi[i+1,j]
+	phiW = phi[i,j-1]
+	phiE = phi[i,j+1]
+
+	vn = (phiN-phiP)/dy * ratio_rho(rho, rho1, i, j, "N", dx, dy, Solid)
+	vs = (phiP-phiS)/dy * ratio_rho(rho, rho1, i, j, "S", dx, dy, Solid)
+	vw = (phiW-phiP)/dx * ratio_rho(rho, rho1, i, j, "W", dx, dy, Solid)
+	ve = (phiP-phiE)/dx * ratio_rho(rho, rho1, i, j, "E", dx, dy, Solid)
+
+	if j == 1:
+		vn = Vin
+		vs = Vin
+		vw = 0
+	elif j == nx-2:
+		ve = 0
+
+	vx = 0.5*(vn + vs)
+	vy = 0.5*(ve + vw)
+	return vx, vy
 
 def ratio_rho(rho0, rho, i, j, dir, dx, dy, Solid):
 	if dir == "N":
@@ -70,8 +84,6 @@ def ratio_rho(rho0, rho, i, j, dir, dx, dy, Solid):
 	SolidP = Solid[i,j]
 	rhoP = rho[i,j]
 	rhoP0 = rho0[i,j]
-
-	print("i=%i,j=%i, dir=%s, rhoX=%1.1f, rhoX0=%1.1f, rhoP=%1.1f, rhoP0=%1.1f, d=%1.1f" % (i,j,dir,rhoX,rhoX0,rhoP,rhoP0,d))
 
 	if SolidX and not SolidP:
 		ratio = 2*rhoP0/rhoP
