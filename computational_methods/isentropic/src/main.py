@@ -64,14 +64,14 @@ Solid[:] = False
 #			rho[i,j] = 0
 
 # Boundary conditions
-phi[0, :] = 1
+#phi[0, :] = 1
 
 # Iteration
 incr = 0.5
 
 while incr > delta and iter < ITERMAX:
 	iter += 1
-	for i in range(0, ny): # rows
+	for i in range(1, ny-1): # rows
 		for j in range (0, nx): # columns
 			phi1[i,j], vn, vs, vw, ve = tools.calc_a(phi, rho1, rho, i, j, nx, ny, dx, dy, Vinput, Solid)
 			Vx[i,j] = 0.5*(vn + vs)
@@ -96,20 +96,16 @@ while incr > delta and iter < ITERMAX:
 	phi = phi1
 	print("Iteration %i: maximum difference: %2.4e" %(iter, incr))
 
+cmap = plt.get_cmap('PiYG')
 
 fig1 = plt.figure()
 ax1 = fig1.gca()
 ax1.streamplot(xv, yv, Vx, Vy, density=[0.5, 1])
+im = ax1.pcolormesh(xv, yv, V, cmap=cmap)
+fig1.colorbar(im, ax=ax1)
 circ = Circle(center, radius)
 ax1.add_patch(circ)
 ax1.axis("equal")
-
-cmap = plt.get_cmap('PiYG')
-
-fig2 = plt.figure()
-ax2 = fig2.gca()
-im = ax2.pcolormesh(xv, yv, V, cmap=cmap)
-fig2.colorbar(im, ax=ax2)
 
 fig3 = plt.figure()
 ax3 = fig3.gca()
