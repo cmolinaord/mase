@@ -34,9 +34,9 @@ def calc_a(phi, rho, rho0, i, j, nx, ny, dx, dy, Vin, Solid):
 	if j == 0:
 		aW = 0
 		phiW = 0
-		if i != 0 and i != ny-1:
-			aN = Vin
-			aS = Vin
+		#if i != 0 and i != ny-1:
+		#	aN = Vin
+		#	aS = Vin
 	else:
 		aW = ratio_rho(rho0, rho, i, j, "W", dx, dy, Solid) * dy/dx
 		phiW = phi[i,j-1]
@@ -61,6 +61,13 @@ def calc_a(phi, rho, rho0, i, j, nx, ny, dx, dy, Vin, Solid):
 	vw = (phiW-phiP)/dy * aW
 	vn = (phiN-phiP)/dx * aN
 	vs = (phiP-phiS)/dx * aS
+
+	if j == 0:
+		aW = 0
+		phiW = 0
+		if i != 0 and i != ny-1:
+			vn = Vin
+			vn = Vin
 
 	return phiP, vn, vs, vw, ve
 
