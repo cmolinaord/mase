@@ -49,13 +49,6 @@ def calc_vel(phi, rho, rho1, i, j, nx, ny, dx, dy, Solid, Vin):
 	vw = (phiW-phiP)/dx * ratio_rho(rho, rho1, i, j, "W", dx, dy, Solid)
 	ve = (phiP-phiE)/dx * ratio_rho(rho, rho1, i, j, "E", dx, dy, Solid)
 
-	if j == 1:
-		vn = Vin
-		vs = Vin
-		vw = 0
-	elif j == nx-2:
-		ve = 0
-
 	vx = 0.5*(vn + vs)
 	vy = 0.5*(ve + vw)
 	return vx, vy
@@ -93,4 +86,4 @@ def ratio_rho(rho0, rho, i, j, dir, dx, dy, Solid):
 		ratio = 0
 	else:
 		ratio = d / (0.5*d/rhoP0*rhoP + 0.5*d/rhoX0*rhoX)
-	return ratio
+	return 1

@@ -8,9 +8,9 @@ args = sys.argv
 ITERMAX = int(args[1])
 
 # Computational parameters
-delta = 0.004
-nx = 50
-ny = 50
+delta = 1e-5
+nx = 20
+ny = 20
 iter = 0
 
 # Domain parameters (m)
@@ -33,8 +33,11 @@ Vinput = 5
 
 # Creation of domain
 phi, dx, dy = tools.create_mesh(L, H, nx, ny) # Create a null matrix for phi
-phi = np.zeros([ny,nx]) -0.5 + np.random.random([ny,nx])
+phi = np.zeros([ny,nx]) + 0* np.random.random([ny,nx])
 phi1 = np.zeros([ny,nx])
+for j in range(0, nx):
+	phi[j,0] = -j
+	phi1[j,0] = -j
 p = np.zeros([ny,nx]) + p0
 p1 = np.zeros([ny,nx]) + p0
 T = np.zeros([ny,nx]) + T0
@@ -43,7 +46,7 @@ rho = np.ones([ny,nx])
 rho1 = np.ones([ny,nx])
 Vx = np.ones([ny,nx])
 Vy = np.zeros([ny,nx])
-V = np.zeros([ny,nx])
+V = np.ones([ny,nx])
 V1 = np.ones([ny,nx])
 
 x = np.linspace(0, L, nx)
@@ -67,7 +70,7 @@ for i in range(0,ny):
 			Solid[i,j] = True
 			rho[i,j] = 0
 
-phi[:,0] = 1
+#phi[:,0] = 1
 
 # Iteration
 incr = 0.5
@@ -78,6 +81,8 @@ while incr > delta and iter < ITERMAX:
 		for j in range (1, nx-1): # columns
 			phi1[i,j] = tools.calc_phi(phi, rho1, rho, i, j, nx, ny, dx, dy, Solid)
 	# Phi has changed (check is this would be the last iteration)
+	print(phi)
+	print(phi1)
 	incr = np.max(np.abs(phi1 - phi))
 
 	for i in range(1, ny-1): # rows
@@ -90,16 +95,14 @@ while incr > delta and iter < ITERMAX:
 			# Isentropic condition (pressure calculated)
 			p1[i,j] = p[i,j] * (T1[i,j]/T[i,j])**gamma_exp
 
-	rho_old = rho
-	rho1 = tools.density(p1, T1, R)
-	rho = rho_old
+	#rho1 = tools.density(p1, T1, R)
+	#rho = rho_old
 	V = V1
 	T = T1
 	p = p1
-	phi = phi1
+	phi[:,:] = phi1[:,:]
 	print("Iteration %i: maximum difference: %2.4e" %(iter, incr))
 
-print(rho1)
 
 cmap = plt.get_cmap('PiYG')
 
@@ -116,7 +119,7 @@ plt.title("Velocity (m/s)")
 fig2 = plt.figure()
 ax2 = fig2.gca()
 ax2.streamplot(xv, yv, Vx, Vy, density=[0.5, 1])
-im = ax2.pcolormesh(xv, yv, rho1, cmap=cmap)
+im = ax2.pcolormesh(xv, yv, Solid, cmap=cmap)
 fig2.colorbar(im, ax=ax2)
 circ = Circle(center, radius, fill=False)
 ax2.add_patch(circ)
