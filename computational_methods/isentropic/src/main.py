@@ -9,12 +9,12 @@ ITERMAX = int(args[1])
 
 # Computational parameters
 delta = 1e-5
-nx = 20
-ny = 20
+nx = 80
+ny = 40
 iter = 0
 
 # Domain parameters (m)
-L = 10
+L = 20
 H = 10
 
 # Physical constants
@@ -35,7 +35,7 @@ Vinput = 5
 phi, dx, dy = tools.create_mesh(L, H, nx, ny) # Create a null matrix for phi
 phi = np.zeros([ny,nx]) + 0* np.random.random([ny,nx])
 phi1 = np.zeros([ny,nx])
-for j in range(0, nx):
+for j in range(0, ny):
 	phi[j,0] = -j
 	phi1[j,0] = -j
 p = np.zeros([ny,nx]) + p0
@@ -81,8 +81,6 @@ while incr > delta and iter < ITERMAX:
 		for j in range (1, nx-1): # columns
 			phi1[i,j] = tools.calc_phi(phi, rho1, rho, i, j, nx, ny, dx, dy, Solid)
 	# Phi has changed (check is this would be the last iteration)
-	print(phi)
-	print(phi1)
 	incr = np.max(np.abs(phi1 - phi))
 
 	for i in range(1, ny-1): # rows

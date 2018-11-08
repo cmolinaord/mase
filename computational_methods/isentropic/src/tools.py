@@ -86,4 +86,4 @@ def ratio_rho(rho0, rho, i, j, dir, dx, dy, Solid):
 		ratio = 0
 	else:
 		ratio = d / (0.5*d/rhoP0*rhoP + 0.5*d/rhoX0*rhoX)
-	return 1
+	return ratio
