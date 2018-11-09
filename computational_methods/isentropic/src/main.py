@@ -1,3 +1,21 @@
+# Isentropic compressible fluid dynamics simulation
+# Computational Engineering 2018 - Computational Fluid Dynamics
+# MASE - Master's degree in Space and Aeronautical Engineering
+# (C) Carlos Molina 2018
+
+# Definition of the Domain
+#      ________________________
+# ny-1| ->                     |
+#    ·| ->    N                |
+#    ·| ->  W P E              |
+#    3| ->    S                | H
+#    2| ->                     |
+#    1| ->                     |
+#    0| ->_____________________|
+#      0 1 2 3     · · ·   nx-1
+#                 L
+
+
 import sys
 import numpy as np
 import tools
@@ -7,8 +25,10 @@ from matplotlib.pyplot import Circle
 args = sys.argv
 ITERMAX = int(args[1])
 
+compressible = True
+
 # Computational parameters
-delta = 1e-5
+precission = 1e-5
 nx = 40
 ny = 40
 iter = 0
@@ -29,27 +49,27 @@ p0 = 101325 # Initial pressure (Pa)
 rho0 = tools.density(p0, T0, R) # Intial density (kg/m^3)
 
 # Inlet face
-Vinput = 0.4
+Vin = 3
 
 # Creation of domain
 phi, dx, dy = tools.create_mesh(L, H, nx, ny) # Create a null matrix for phi
-phi = np.zeros([ny,nx])
-phi1 = np.zeros([ny,nx])
+phi 	= np.zeros([ny,nx])
+phi_new 	= np.zeros([ny,nx])
+p 	= np.zeros([ny,nx]) + p0
+T 	= np.zeros([ny,nx]) + T0
+rho	= np.zeros([ny,nx]) + rho0
+Vx 	= np.zeros([ny,nx])
+Vy 	= np.zeros([ny,nx])
+V 	= np.zeros([ny,nx])
+
+# Initialization of boundary condition for Phi
+# Inlet (West border)
 for i in range(1, ny):
-	phi[i,0] 		= 10 + phi[i-1,0] - Vinput*dx
-	phi1[i,0] 		= 10 + phi1[i-1,0] - Vinput*dx
-	phi[i,nx-1] 	= 10 + phi[i-1,nx-1] - Vinput*dx
-	phi1[i,nx-1] 	= 10 + phi[i-1,nx-1] - Vinput*dx
-p = np.zeros([ny,nx]) + p0
-p1 = np.zeros([ny,nx]) + p0
-T = np.zeros([ny,nx]) + T0
-T1 = np.zeros([ny,nx]) + T0
-rho = np.ones([ny,nx]) + rho0
-rho1 = np.ones([ny,nx]) + rho0
-Vx = np.ones([ny,nx])
-Vy = np.zeros([ny,nx])
-V = np.ones([ny,nx])
-V1 = np.ones([ny,nx])
+	phi[i,0] = phi[i-1,0]  + Vin*dx
+# North and South borders (Same phi as in the first column)
+phi[0,1:] 	 = phi[0,0]
+phi[ny-1,1:] = phi[ny-1,0]
+# Copy initial conditions to
 
 x = np.linspace(0, L, nx)
 y = np.linspace(0, H, ny)
@@ -62,8 +82,8 @@ radius = min(L,H)/6
 Solid, dx, dy = tools.create_mesh(L, H, nx, ny)
 Solid[:] = False
 # Defined walls in North and South
-Solid[0,:] = True
-Solid[ny-1,:] = True
+#Solid[0,:] = True
+#Solid[ny-1,:] = True
 # Defined cylinder in the middle
 for i in range(1,ny-1):
 	for j in range(1,nx-1):
@@ -72,36 +92,33 @@ for i in range(1,ny-1):
 			Solid[i,j] = True
 			rho[i,j] = 0
 
-#phi[:,0] = 1
-
 # Iteration
-incr = 0.5
+error = 1
 
-while incr > delta and iter < ITERMAX:
+while error > precission and iter < ITERMAX:
 	iter += 1
 	for i in range(1, ny-1): # rows
 		for j in range (1, nx-1): # columns
-			phi1[i,j] = tools.calc_phi(phi, rho1, rho, i, j, nx, ny, dx, dy, Solid)
-	# Phi has changed (check is this would be the last iteration)
-	incr = np.max(np.abs(phi1 - phi))
+			phi_new[i,j] = tools.calc_phi(phi, rho, rho0, i, j, nx, ny, dx, dy, Solid)
+	# Last column boundary condition (normal outflow)
+	phi_new[:,nx-1] = phi[:,nx-2]
+
+	# Meassure error
+	error = np.max(np.abs(phi_new - phi))
 
 	for i in range(1, ny-1): # rows
 		for j in range (1, nx-1): # columns
-			Vx[i,j], Vy[i,j] = tools.calc_vel(phi1, rho, rho1, i, j, nx, ny, dx, dy, Solid, Vinput)
-
-			V1[i,j]	= np.sqrt(Vx[i,j]**2 + Vx[i,j]**2)
+			Vx[i,j], Vy[i,j] = tools.calc_vel(phi_new, rho, rho0, i, j, nx, ny, dx, dy, Solid, Vin)
+			V[i,j]	= np.sqrt(Vx[i,j]**2 + Vx[i,j]**2)
 			# Energy conservation (calculated temperature)
-			T1[i,j] = T[i,j] + 0.5*(V[i,j]**2 - V1[i,j]**2)/c_p
+			T[i,j] = T0 + 0.5*(Vin**2 - V[i,j]**2)/c_p
 			# Isentropic condition (pressure calculated)
-			p1[i,j] = p[i,j] * (T1[i,j]/T[i,j])**gamma_exp
-
-	rho1 = tools.density(p1, T1, R)
-	rho[:,:] = rho1[:,:]
-	V = V1
-	T = T1
-	p = p1
-	phi[:,:] = phi1[:,:]
-	print("Iteration %i: maximum difference: %2.4e" %(iter, incr))
+			p[i,j] = p0 * (T[i,j]/T0)**gamma_exp
+	# Compute new pressure (if compressible case)
+	if compressible:
+		rho = tools.density(p, T, R)
+	phi[:,:] = phi_new[:,:]
+	print("Iteration %i: maximum error: %2.4e" %(iter, error))
 
 cmap = plt.get_cmap('PiYG')
 
@@ -118,7 +135,7 @@ plt.title("Velocity (m/s)")
 fig2 = plt.figure()
 ax2 = fig2.gca()
 ax2.streamplot(xv, yv, Vx, Vy, density=[0.5, 1])
-im = ax2.pcolormesh(xv, yv, Solid, cmap=cmap)
+im = ax2.pcolormesh(xv, yv, phi, cmap=cmap)
 fig2.colorbar(im, ax=ax2)
 circ = Circle(center, radius, fill=False)
 ax2.add_patch(circ)
