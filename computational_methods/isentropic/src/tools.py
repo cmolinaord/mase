@@ -30,10 +30,10 @@ def calc_phi(phi, rho, rho0, i, j, nx, ny, dx, dy, Solid):
 	else:
 		phiP = (aN*phiN + aS*phiS + aW*phiW + aE*phiE)/aP
 
-	if j == 1:
-		phiP = phiW
-	elif j == nx-2:
-		phiP = phiE
+	#if j == 1:
+	#	phiP = phiW
+	#elif j == nx-2:
+	#	phiP = phiE
 
 	return phiP
 
@@ -86,4 +86,4 @@ def ratio_rho(rho0, rho, i, j, dir, dx, dy, Solid):
 		ratio = 0
 	else:
 		ratio = d / (0.5*d/rhoP0*rhoP + 0.5*d/rhoX0*rhoX)
-	return ratio
+	return 1

@@ -9,12 +9,12 @@ ITERMAX = int(args[1])
 
 # Computational parameters
 delta = 1e-5
-nx = 80
+nx = 40
 ny = 40
 iter = 0
 
 # Domain parameters (m)
-L = 20
+L = 10
 H = 10
 
 # Physical constants
@@ -29,21 +29,23 @@ p0 = 101325 # Initial pressure (Pa)
 rho0 = tools.density(p0, T0, R) # Intial density (kg/m^3)
 
 # Inlet face
-Vinput = 5
+Vinput = 0.4
 
 # Creation of domain
 phi, dx, dy = tools.create_mesh(L, H, nx, ny) # Create a null matrix for phi
-phi = np.zeros([ny,nx]) + 0* np.random.random([ny,nx])
+phi = np.zeros([ny,nx])
 phi1 = np.zeros([ny,nx])
-for j in range(0, ny):
-	phi[j,0] = -j
-	phi1[j,0] = -j
+for i in range(1, ny):
+	phi[i,0] 		= 10 + phi[i-1,0] - Vinput*dx
+	phi1[i,0] 		= 10 + phi1[i-1,0] - Vinput*dx
+	phi[i,nx-1] 	= 10 + phi[i-1,nx-1] - Vinput*dx
+	phi1[i,nx-1] 	= 10 + phi[i-1,nx-1] - Vinput*dx
 p = np.zeros([ny,nx]) + p0
 p1 = np.zeros([ny,nx]) + p0
 T = np.zeros([ny,nx]) + T0
 T1 = np.zeros([ny,nx]) + T0
-rho = np.ones([ny,nx])
-rho1 = np.ones([ny,nx])
+rho = np.ones([ny,nx]) + rho0
+rho1 = np.ones([ny,nx]) + rho0
 Vx = np.ones([ny,nx])
 Vy = np.zeros([ny,nx])
 V = np.ones([ny,nx])
@@ -63,8 +65,8 @@ Solid[:] = False
 Solid[0,:] = True
 Solid[ny-1,:] = True
 # Defined cylinder in the middle
-for i in range(0,ny):
-	for j in range(0,nx):
+for i in range(1,ny-1):
+	for j in range(1,nx-1):
 		dist = np.sqrt((x[j]-center[0])**2 + (y[i]-center[1])**2)
 		if dist < radius:
 			Solid[i,j] = True
@@ -93,14 +95,13 @@ while incr > delta and iter < ITERMAX:
 			# Isentropic condition (pressure calculated)
 			p1[i,j] = p[i,j] * (T1[i,j]/T[i,j])**gamma_exp
 
-	#rho1 = tools.density(p1, T1, R)
-	#rho = rho_old
+	rho1 = tools.density(p1, T1, R)
+	rho[:,:] = rho1[:,:]
 	V = V1
 	T = T1
 	p = p1
 	phi[:,:] = phi1[:,:]
 	print("Iteration %i: maximum difference: %2.4e" %(iter, incr))
-
 
 cmap = plt.get_cmap('PiYG')
 
