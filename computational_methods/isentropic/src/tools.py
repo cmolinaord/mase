@@ -25,8 +25,9 @@ def calc_phi(phi, rho, rho0, i, j, nx, ny, dx, dy, Solid):
 
 	aP = aE + aW + aN + aS
 	# If fully surrounded by Solid
+	phi_solid = 0.5
 	if Solid[i,j] == True:
-		phiP = phi[int(0.5*ny),0]
+		phiP = phi[int(phi_solid*ny),0]
 	else:
 		phiP = (aN*phiN + aS*phiS + aW*phiW + aE*phiE)/aP
 
