@@ -25,16 +25,16 @@ from matplotlib.pyplot import Circle
 args = sys.argv
 ITERMAX = int(args[1])
 
-compressible = True
+compressible = False
 
 # Computational parameters
-precission = 1e-5
-nx = 40
-ny = 40
+precission = 1e-3
+nx = 120
+ny = 60
 iter = 0
 
 # Domain parameters (m)
-L = 10
+L = 20
 H = 10
 
 # Physical constants
@@ -54,10 +54,10 @@ Vin = 3
 # Creation of domain
 phi, dx, dy = tools.create_mesh(L, H, nx, ny) # Create a null matrix for phi
 phi 	= np.zeros([ny,nx])
-phi_new 	= np.zeros([ny,nx])
+phi_new = np.zeros([ny,nx])
 p 	= np.zeros([ny,nx]) + p0
 T 	= np.zeros([ny,nx]) + T0
-rho	= np.zeros([ny,nx]) + rho0
+rho 	= np.zeros([ny,nx]) + rho0
 Vx 	= np.zeros([ny,nx])
 Vy 	= np.zeros([ny,nx])
 V 	= np.zeros([ny,nx])
@@ -65,11 +65,12 @@ V 	= np.zeros([ny,nx])
 # Initialization of boundary condition for Phi
 # Inlet (West border)
 for i in range(1, ny):
-	phi[i,0] = phi[i-1,0]  + Vin*dx
+	phi[i,:] = phi[i-1,0] + Vin*dx
 # North and South borders (Same phi as in the first column)
 phi[0,1:] 	 = phi[0,0]
 phi[ny-1,1:] = phi[ny-1,0]
-# Copy initial conditions to
+# Copy initial conditions to phi_new
+phi_new[:,:] = phi[:,:]
 
 x = np.linspace(0, L, nx)
 y = np.linspace(0, H, ny)
@@ -80,20 +81,29 @@ center = [L/2, H/2]
 radius = min(L,H)/6
 
 Solid, dx, dy = tools.create_mesh(L, H, nx, ny)
-Solid[:] = False
+Solid[:,:] = False
 # Defined walls in North and South
-#Solid[0,:] = True
-#Solid[ny-1,:] = True
+Solid[0,:] = True
+Solid[ny-1,:] = True
 # Defined cylinder in the middle
+#Solid[5:45,20] = True
 for i in range(1,ny-1):
 	for j in range(1,nx-1):
 		dist = np.sqrt((x[j]-center[0])**2 + (y[i]-center[1])**2)
 		if dist < radius:
 			Solid[i,j] = True
-			rho[i,j] = 0
+			#rho[i,j] = 0
 
 # Iteration
 error = 1
+
+#fig2 = plt.figure()
+#ax2 = fig2.gca()
+#circ = Circle(center, radius, fill=False)
+#ax2.add_patch(circ)
+#ax2.axis("equal")
+#plt.title("Density")
+
 
 while error > precission and iter < ITERMAX:
 	iter += 1
@@ -102,7 +112,7 @@ while error > precission and iter < ITERMAX:
 			phi_new[i,j] = tools.calc_phi(phi, rho, rho0, i, j, nx, ny, dx, dy, Solid)
 	# Last column boundary condition (normal outflow)
 	phi_new[:,nx-1] = phi[:,nx-2]
-
+	#print(np.round(phi*100)/100)
 	# Meassure error
 	error = np.max(np.abs(phi_new - phi))
 
@@ -111,14 +121,22 @@ while error > precission and iter < ITERMAX:
 			Vx[i,j], Vy[i,j] = tools.calc_vel(phi_new, rho, rho0, i, j, nx, ny, dx, dy, Solid, Vin)
 			V[i,j]	= np.sqrt(Vx[i,j]**2 + Vx[i,j]**2)
 			# Energy conservation (calculated temperature)
-			T[i,j] = T0 + 0.5*(Vin**2 - V[i,j]**2)/c_p
-			# Isentropic condition (pressure calculated)
-			p[i,j] = p0 * (T[i,j]/T0)**gamma_exp
+			if compressible:
+				T[i,j] = T0 + 0.5*(Vin**2 - V[i,j]**2)/c_p
+				# Isentropic condition (pressure calculated)
+				p[i,j] = p0 * (T[i,j]/T0)**gamma_exp
 	# Compute new pressure (if compressible case)
 	if compressible:
 		rho = tools.density(p, T, R)
 	phi[:,:] = phi_new[:,:]
 	print("Iteration %i: maximum error: %2.4e" %(iter, error))
+
+	# Plots
+	#ax2.streamplot(xv, yv, Vx, Vy, density=[0.5, 1])
+	#im = ax2.pcolormesh(xv, yv, phi, cmap=cmap)
+	#plt.pause(0.05)
+
+print(np.max(np.max(V)))
 
 cmap = plt.get_cmap('PiYG')
 
@@ -140,7 +158,7 @@ fig2.colorbar(im, ax=ax2)
 circ = Circle(center, radius, fill=False)
 ax2.add_patch(circ)
 ax2.axis("equal")
-plt.title("Density")
+plt.title("Phi")
 
 
 fig3 = plt.figure()

@@ -18,15 +18,15 @@ def calc_phi(phi, rho, rho0, i, j, nx, ny, dx, dy, Solid):
 	aS = ratio_rho(rho, rho0, i, j, "S", dx, dy, Solid) * dx/dy
 	aW = ratio_rho(rho, rho0, i, j, "W", dx, dy, Solid) * dy/dx
 	aE = ratio_rho(rho, rho0, i, j, "E", dx, dy, Solid) * dy/dx
-	phiN = phi[i-1,j]
-	phiS = phi[i+1,j]
+	phiN = phi[i+1,j]
+	phiS = phi[i-1,j]
 	phiW = phi[i,j-1]
 	phiE = phi[i,j+1]
 
 	aP = aE + aW + aN + aS
 	# If fully surrounded by Solid
-	if aP == 0:
-		phiP = 0
+	if Solid[i,j] == True:
+		phiP = phi[int(0.5*ny),0]
 	else:
 		phiP = (aN*phiN + aS*phiS + aW*phiW + aE*phiE)/aP
 
@@ -34,8 +34,8 @@ def calc_phi(phi, rho, rho0, i, j, nx, ny, dx, dy, Solid):
 
 def calc_vel(phi, rho, rho0, i, j, nx, ny, dx, dy, Solid, Vin):
 	phiP = phi[i,j]
-	phiN = phi[i-1,j]
-	phiS = phi[i+1,j]
+	phiN = phi[i+1,j]
+	phiS = phi[i-1,j]
 	phiW = phi[i,j-1]
 	phiE = phi[i,j+1]
 
@@ -54,12 +54,12 @@ def ratio_rho(rho, rho0, i, j, dir, dx, dy, Solid):
 	rhoP = rho[i,j]
 	# Neighbor node
 	if dir == "N":
-		rhoX = rho[i-1,j]
-		SolidX = Solid[i-1,j]
-		d = dy
-	elif dir == "S":
 		rhoX = rho[i+1,j]
 		SolidX = Solid[i+1,j]
+		d = dy
+	elif dir == "S":
+		rhoX = rho[i-1,j]
+		SolidX = Solid[i-1,j]
 		d = dy
 	elif dir == "W":
 		rhoX = rho[i,j-1]
@@ -78,4 +78,4 @@ def ratio_rho(rho, rho0, i, j, dir, dx, dy, Solid):
 		ratio = 0
 	else:
 		ratio = d / (0.5*d/rho0*rhoP + 0.5*d/rho0*rhoX)
-	return 1
+	return ratio
