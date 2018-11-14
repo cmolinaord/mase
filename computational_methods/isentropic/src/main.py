@@ -15,7 +15,7 @@
 #      0 1 2 3     · · ·   nx-1
 #                 L
 
-
+import time
 import sys
 import numpy as np
 import tools
@@ -56,6 +56,9 @@ print("Precission = %1.1E" % precission)
 print("Compressible? %s" % ('Yes' if compressible else 'No'))
 print("###########################")
 print(" ")
+
+
+tic = time.perf_counter()
 
 # Physical constants
 R = 287.058
@@ -152,7 +155,10 @@ while error > precission and iter < ITERMAX:
 	#im = ax2.pcolormesh(xv, yv, phi, cmap=cmap)
 	#plt.pause(0.05)
 
-cmap = plt.get_cmap('PiYG')
+toc = time.perf_counter() - tic
+print("Elapsed time: %1.2fs" % toc)
+
+cmap = plt.get_cmap('jet')
 
 fig1 = plt.figure()
 ax1 = fig1.gca()
@@ -166,8 +172,8 @@ plt.title("Velocity (m/s)")
 
 fig2 = plt.figure()
 ax2 = fig2.gca()
-ax2.streamplot(w.xv, w.yv, Vx, Vy, density=[0.5, 1])
-im = ax2.pcolormesh(w.xv, w.yv, phi, cmap=cmap)
+ax2.streamplot(w.xv, w.yv, Vx, Vy, density=[0.2, 0.5])
+im = ax2.pcolormesh(w.xv, w.yv, rho, cmap=cmap)
 fig2.colorbar(im, ax=ax2)
 circ = Circle(center, radius, fill=False)
 ax2.add_patch(circ)
