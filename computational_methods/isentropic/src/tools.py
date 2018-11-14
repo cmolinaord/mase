@@ -1,10 +1,21 @@
 import numpy as np
 
-def create_mesh(L, H, nx, ny):
-	A = np.zeros([ny, nx])
-	dx = L/nx
-	dy = H/ny
-	return A, dx, dy
+class world(object):
+	def __init__(self, L, H, nx, ny):
+		self.L = L
+		self.H = H
+		self.nx = nx
+		self.ny = ny
+		self.dx = L/nx
+		self.dy = H/ny
+		self.x = np.linspace(0, L, nx)
+		self.y = np.linspace(0, H, ny)
+		self.xv, self.yv = np.meshgrid(self.x, self.y)
+		# Creation of solid
+		self.solid = self.create_matrix(0)
+	def create_matrix(self, init):
+		A = np.zeros([self.ny, self.nx]) + init
+		return A
 
 def density(p, T, R):
 	# Calculate density of the gas given p (pressure), T (temperature) and
@@ -12,70 +23,70 @@ def density(p, T, R):
 	rho = p / T / R
 	return rho
 
-def calc_phi(phi, rho, rho0, i, j, nx, ny, dx, dy, Solid):
+def calc_phi(phi, rho, rho0, i, j, world):
 
-	aN = ratio_rho(rho, rho0, i, j, "N", dx, dy, Solid) * dx/dy
-	aS = ratio_rho(rho, rho0, i, j, "S", dx, dy, Solid) * dx/dy
-	aW = ratio_rho(rho, rho0, i, j, "W", dx, dy, Solid) * dy/dx
-	aE = ratio_rho(rho, rho0, i, j, "E", dx, dy, Solid) * dy/dx
+	aN = ratio_rho(rho, rho0, i, j, "N", world) * world.dx/world.dy
+	aS = ratio_rho(rho, rho0, i, j, "S", world) * world.dx/world.dy
+	aW = ratio_rho(rho, rho0, i, j, "W", world) * world.dy/world.dx
+	aE = ratio_rho(rho, rho0, i, j, "E", world) * world.dy/world.dx
 	phiN = phi[i+1,j]
 	phiS = phi[i-1,j]
 	phiW = phi[i,j-1]
 	phiE = phi[i,j+1]
 
 	aP = aE + aW + aN + aS
-	# If fully surrounded by Solid
+	# If fully surrounded by solid
 	phi_solid = 0.5
-	if Solid[i,j] == True:
-		phiP = phi[int(phi_solid*ny),0]
+	if world.solid[i,j] == True:
+		phiP = phi[int(phi_solid*world.ny),0]
 	else:
 		phiP = (aN*phiN + aS*phiS + aW*phiW + aE*phiE)/aP
 
 	return phiP
 
-def calc_vel(phi, rho, rho0, i, j, nx, ny, dx, dy, Solid, Vin):
+def calc_vel(phi, rho, rho0, i, j, world, Vin):
 	phiP = phi[i,j]
 	phiN = phi[i+1,j]
 	phiS = phi[i-1,j]
 	phiW = phi[i,j-1]
 	phiE = phi[i,j+1]
 
-	vn = (phiN-phiP)/dy * ratio_rho(rho, rho0, i, j, "N", dx, dy, Solid)
-	vs = (phiP-phiS)/dy * ratio_rho(rho, rho0, i, j, "S", dx, dy, Solid)
-	vw = (phiW-phiP)/dx * ratio_rho(rho, rho0, i, j, "W", dx, dy, Solid)
-	ve = (phiP-phiE)/dx * ratio_rho(rho, rho0, i, j, "E", dx, dy, Solid)
+	vn = (phiN-phiP)/world.dy * ratio_rho(rho, rho0, i, j, "N", world)
+	vs = (phiP-phiS)/world.dy * ratio_rho(rho, rho0, i, j, "S", world)
+	vw = (phiW-phiP)/world.dx * ratio_rho(rho, rho0, i, j, "W", world)
+	ve = (phiP-phiE)/world.dx * ratio_rho(rho, rho0, i, j, "E", world)
 
 	vx = 0.5*(vn + vs)
 	vy = 0.5*(ve + vw)
 	return vx, vy
 
-def ratio_rho(rho, rho0, i, j, dir, dx, dy, Solid):
+def ratio_rho(rho, rho0, i, j, dir, world):
 	# Central node
-	SolidP = Solid[i,j]
+	solidP = world.solid[i,j]
 	rhoP = rho[i,j]
 	# Neighbor node
 	if dir == "N":
 		rhoX = rho[i+1,j]
-		SolidX = Solid[i+1,j]
-		d = dy
+		solidX = world.solid[i+1,j]
+		d = world.dy
 	elif dir == "S":
 		rhoX = rho[i-1,j]
-		SolidX = Solid[i-1,j]
-		d = dy
+		solidX = world.solid[i-1,j]
+		d = world.dy
 	elif dir == "W":
 		rhoX = rho[i,j-1]
-		SolidX = Solid[i,j-1]
-		d = dx
+		solidX = world.solid[i,j-1]
+		d = world.dx
 	elif dir == "E":
 		rhoX = rho[i,j+1]
-		SolidX = Solid[i,j+1]
-		d = dx
+		solidX = world.solid[i,j+1]
+		d = world.dx
 
-	if SolidX and not SolidP:
+	if solidX and not solidP:
 		ratio = 2*rho0/rhoP
-	elif SolidP and not SolidX:
+	elif solidP and not solidX:
 		ratio = 2*rho0/rhoX
-	elif SolidP and SolidX:
+	elif solidP and solidX:
 		ratio = 0
 	else:
 		ratio = d / (0.5*d/rho0*rhoP + 0.5*d/rho0*rhoX)
