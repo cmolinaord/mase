@@ -22,16 +22,26 @@ import tools
 import matplotlib.pyplot as plt
 from matplotlib.pyplot import Circle
 
-args = sys.argv
-ITERMAX = int(args[1])
-
-compressible = False
-
-# Computational parameters
+# Input parameters
+ITERMAX = 200
+nx = 60
+ny = 30
 precission = 1e-3
-nx = 80
-ny = 40
-iter = 0
+
+args = sys.argv
+if len(args) < 3:
+	ITERMAX = int(args[1])
+elif len(args) < 5:
+	nx = int(args[2])
+	ny = int(args[3])
+elif len(args) < 6:
+	precission = int(args[4])
+else:
+	print("ERROR: Too many input arguments")
+	print("Exiting...")
+	exit()
+
+compressible = True
 
 # Domain parameters (m)
 L = 20
@@ -88,7 +98,8 @@ for i in range(1,ny-1):
 		if dist < radius:
 			w.solid[i,j] = True
 
-# Iteration
+# Iteration computing
+iter = 0
 error = 1
 
 #fig2 = plt.figure()
@@ -123,14 +134,13 @@ while error > precission and iter < ITERMAX:
 	if compressible:
 		rho = tools.density(p, T, R)
 	phi[:,:] = phi_new[:,:]
-	print("Iteration %i: maximum error: %2.4e" %(iter, error))
+	if iter % 10 == 0:
+		print("Iteration %i: maximum error: %2.4e" %(iter, error))
 
 	# Plots
 	#ax2.streamplot(xv, yv, Vx, Vy, density=[0.5, 1])
 	#im = ax2.pcolormesh(xv, yv, phi, cmap=cmap)
 	#plt.pause(0.05)
-
-print(np.max(np.max(V)))
 
 cmap = plt.get_cmap('PiYG')
 
