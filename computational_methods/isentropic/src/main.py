@@ -29,14 +29,14 @@ ny = 30
 precission = 1e-3
 
 args = sys.argv
-if len(args) < 3:
+if len(args) > 1:
 	ITERMAX = int(args[1])
-elif len(args) < 5:
+if len(args) > 3:
 	nx = int(args[2])
 	ny = int(args[3])
-elif len(args) < 6:
-	precission = int(args[4])
-else:
+if len(args) > 4:
+	precission = float(args[4])
+elif len(args) > 5:
 	print("ERROR: Too many input arguments")
 	print("Exiting...")
 	exit()
@@ -46,6 +46,16 @@ compressible = True
 # Domain parameters (m)
 L = 20
 H = 10
+
+# Printing input data
+print("ITERMAX = %i" % ITERMAX)
+print("L = %1.1f" % L)
+print("H = %1.1f" % H)
+print("[nx,ny] = [%i,%i]" % (nx,ny))
+print("Precission = %1.1E" % precission)
+print("Compressible? %s" % ('Yes' if compressible else 'No'))
+print("###########################")
+print(" ")
 
 # Physical constants
 R = 287.058
