@@ -1,7 +1,7 @@
 # Isentropic compressible fluid dynamics simulation
 # Computational Engineering 2018 - Computational Fluid Dynamics
 # MASE - Master's degree in Space and Aeronautical Engineering
-# (C) Carlos Molina 2018
+# Carlos Molina 2018
 
 # Definition of the Domain
 #      ________________________
