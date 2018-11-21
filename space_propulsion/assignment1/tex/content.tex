@@ -1,16 +1,81 @@
-\begin{abstract}
-This is an abstract
-\end{abstract}
+\LARGE{Assignment 1}. \Large{Space Propulsion}\\
+\large{Carlos Molina Ordóñez}\\
+Nov 20th, 2018
 
-\section{Introduction}
+\section{Exercise 1}
 
-\begin{figure}[h]
-	\centering
-	%\includegraphics[width=0.8\textwidth]{img/}
-	\caption[short caption]{Image caption}
-	\label{fig:}
-\end{figure}
+Consider a spacecraft fitted with a reaction control system (RCS) consisting of thrusters
+using Aerozine 50 fuel oxidized with nitrogen tetroxide, yielding a combustion
+temperature $T_c = 3372 K$ and a gas with a molecular weight
+$MW = 0.0226 kg/mol$ and adiabatic coefficient (specific heat ratio)
+$\gamma = 1.24$. The combustion pressure is assumed to be $P_c = 210 MPa$,
+and each thruster produces $F=100N$ of thrust.\\
 
-Text\\
 
-Reference \ref{fig:}\\
+The exit to throat area ratio $A_e/A_t$ has a value in a range from 50 to 100 (to be chosen by
+the student), the following is requested:
+
+\begin{enumerate}
+	\item Propellant  mass flow
+	\item Specific impulse
+	\item Throat area
+\end{enumerate}
+
+\subsection{Solution}
+
+From the equation:
+
+\begin{equation}
+	\frac{A_e}{A_t} = \frac{1}{M_e}{\left[\frac{2+(\gamma-1)M_e^2}{\gamma+1}\right]}^\frac{\gamma+1}{2(\gamma-1)}
+\end{equation}
+
+if we assume a given value for $\frac{A_e}{A_t} = 65$ we can compute the value of the Mach exit number $M_e$:
+\begin{equation}
+	M_e = 4.870
+\end{equation}
+
+With this Mach number we can compute the characteristic velocity $c^*$:
+
+\begin{equation}
+	c^* = \frac{1}{\sqrt{\gamma}}{\left(\frac{\gamma+1}{2}\right)}^\frac{\gamma+1}{2(\gamma-1)} \sqrt{R_g T_c}
+\end{equation}
+
+and, given that the gas constant is $\frac{R}{MW} = 367.9 ~ JK^{-1}kg^{-1}$, $c^*$ is:
+
+\begin{equation}
+	c^* = 1697.39
+\end{equation}
+
+Now, using that $c^*$ is also defined as:
+
+\begin{equation}
+	c^* = \frac{P_c A_t}{\dot{m}}
+	\label{eq:c_star}
+\end{equation}
+
+we can obtain $\dot{m}$ if we know the area of the throat, which can be calculated,
+after knowing the vacuum thrust coefficient in the next equation:
+
+\begin{equation}
+	C_F = \frac{F}{P_c A_t} = 1.8762
+\end{equation}
+
+Where the value of $C_F$ as a function of $\gamma$ and $M_e$ has been obtained
+from the excel table. So, the value of the \textbf{throat area} can now be computed as:
+
+\begin{equation}
+	\boxed{A_t = 2.538·10^{-7} ~ m^2}
+\end{equation}
+
+And if we remember equation (\ref{eq:c_star}), we can now obtain the \textbf{propellant
+mass flow}, $\dot{m}$:
+
+\begin{equation}
+	\boxed{\dot{m} = \frac{P_c A_t}{c^*} = 0.0314 ~ Kg·s^{-1}}
+\end{equation}
+
+And finally, given that the specific impulse, $I_{SP}$ is given by the equation:
+
+\begin{equation}
+	\boxed{I_{SP} = \frac{F}{\dot{m}g_0} = 324.6 ~ s}
+\end{equation}
