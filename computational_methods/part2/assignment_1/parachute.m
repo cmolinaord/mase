@@ -12,13 +12,7 @@ g0 = 9.81; % Gravity constanst (m/s2)
 rho_air = 1.225; % Air density (kg/m3)
 
 m_pl = 120; % Mass of the payload (Kg)
-F0 = m_pl*g0; % Force
 [x, Tnod, Tmat, Tdof, Tdn] = get_input_data();
-
-%% External forces
-F = zeros(1,ndof);
-F(3) = -F0; % Force of the payload
-F([18,21,24,27,30,33,36,39,42]) = F0/9; % Upper aerodynamical forces
 
 % Material data
 % =======================
@@ -31,9 +25,9 @@ F([18,21,24,27,30,33,36,39,42]) = F0/9; % Upper aerodynamical forces
 
 
 % Elements material properties
-m = [% Young modulus [MPa] - Yield strength [MPa] -  Section area [m^2] - Density [kg/m3]
-	200000  300     (0.75^2)*pi/1000000             1500;
-	70000   240     ((6.8^2)-(5.3^2))*pi/1000000    2300];
+m = [% Young modulus [Pa] - Yield strength [Pa] -  Section area [m^2] - Density [kg/m3]
+	200000e6  300e6     (0.75^2)*pi/1000000             1500;
+	70000e6   240e6     ((6.8^2)-(5.3^2))*pi/1000000    2300];
 
 m_bars = zeros(nel, 1);
 for e = 1:nel
@@ -61,25 +55,21 @@ D = 0.5*rho_air*(Vt^2)*Cd*S;
 
  %Force vector
 f = zeros(ndof,1);
-for e = 1:n
+for i = 1:n % For each node
 	%Weight
-	mbars1 = sum(m_bars(Tnod(:,1) == e))/2;
-	mbars2 = sum(m_bars(Tnod(:,2) == e))/2;
+	mbars1 = sum(m_bars(Tnod(:,1) == i))/2;
+	mbars2 = sum(m_bars(Tnod(:,2) == i))/2;
 
-	f(e*3,1) = (mbars1 + mbars2) * g0; % (N)
-	if e > 5
+	f(i*3,1) = (mbars1 + mbars2) * g0; % (N)
+	if i > 5
 		% Surface weight addded and Drag substracted
-		f(e*3,1) = f(e*3,1) + (m_s/9)*g0 - (D/9);
+		f(i*3,1) = f(i*3,1) + (m_s/9)*g0 - (D/9);
 	end
 end
 f(3,1) = f(3,1) + m_pl*g0; % Payload weight added
 
 % Imposed (r) and free (l) degrees of freedom
-vr = 1:3; % Fixed DoF
-vl = 4:42; % Free DoF
-vr = [28 29]; % fixed points
-vl = setdiff(1:ndof,vr); % the other points
-
+vr = [1 2 3 28 29]; 	 % fixed DoF
 
 [u,r] = global_displacements_reactions(K,f,vr);
 % u is the free displacement vector
