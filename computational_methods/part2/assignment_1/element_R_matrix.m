@@ -1,10 +1,8 @@
-function d = element_length(x, Tnod, e)
+function [R, l] = element_R_matrix(x, Tnod, e)
 % Gives the length of an element e
-x1 = x(Tnod(e,1),1);
-y1 = x(Tnod(e,1),2);
-z1 = x(Tnod(e,1),3);
-x2 = x(Tnod(e,2),1);
-y2 = x(Tnod(e,2),2);
-z2 = x(Tnod(e,2),3);
-d = sqrt((x2-x1)^2+(y2-y1)^2+(z2-z1)^2);
-
+dx = x(Tnod(e,1),1) - x(Tnod(e,2),1);
+dy = x(Tnod(e,1),2) - x(Tnod(e,2),2);
+dz = x(Tnod(e,1),3) - x(Tnod(e,2),3);
+l = sqrt(dx*dx+dy*dy+dz*dz);
+R = 1/l * [	dx dy dz 0  0  0;
+		0  0  0  dx dy dz];

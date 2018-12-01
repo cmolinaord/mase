@@ -1,4 +1,5 @@
-clear all
+close all
+clear
 clc
 %% Input values & constants
 
@@ -7,173 +8,84 @@ nel = 41; % number of bars
 nd = 3; % Number of dimensions
 ndof = n * nd; % Number of degrees of freedom
 
-g0 = 9.81; %Gravity constanst
-M = 120; % Mass of the payload (Kg)
-F0 = M*g0; % Force
-[x, Tnod, Tmat, Tdof, Tdn] = get_input_data();
+g0 = 9.81; % Gravity constanst (m/s2)
+rho_air = 1.225; % Air density (kg/m3)
 
+m_pl = 120; % Mass of the payload (Kg)
+F0 = m_pl*g0; % Force
+[x, Tnod, Tmat, Tdof, Tdn] = get_input_data();
 
 %% External forces
 F = zeros(1,ndof);
 F(3) = -F0; % Force of the payload
 F([18,21,24,27,30,33,36,39,42]) = F0/9; % Upper aerodynamical forces
 
-%% Degrees of freedom
-vL = [1 2 3];
-vR = 4:n;
+% Material data
+% =======================
+% Upper surface material
+ rhos = 1500; % kg/m3
+ S = 17.5; % m2
+ Ts = 0.001; % m
+ Cd = 1.25;
+ m_s = rhos*S*Ts; % Kg
 
-%Material data
 
-% Cross section of material (m2)
-A = [pi*(1.5e-3)^2;                         % cable
-pi*(13.6e-2)^2-pi*(13.6e-2-6e-3)^2];    % bars
-% Young modulus of materials (Pa)
-E = [2e5;   % cable
-7e4];   % bars
-% Density of materials (kg/m3)
-rho = [1.5e3; % cable
-2.3e3];   % bars
+% Elements material properties
+m = [% Young modulus [MPa] - Yield strength [MPa] -  Section area [m^2] - Density [kg/m3]
+	200000  300     (0.75^2)*pi/1000000             1500;
+	70000   240     ((6.8^2)-(5.3^2))*pi/1000000    2300];
 
-Lc = 3.5; % Length of the cables (m)
-Lbl = 3.5; % Length of the long bars (m)
-Lbs = 1.25; % Length of the short bars (m)
-Mpl = 120; % Payload mass (kg)
-Mc = A(1)*Lc*rho(1); % Cable mass (kg)
-Mbl = A(2)*Lbl*rho(2); % Long bar mass (kg)
-Mbs = A(2)*Lbs*rho(2); % Long bar mass (kg)
-
-%% Computation of element stiffness matrix
-
-K_el = zeros(ndof,ndof,nel);
-for e=1:nel
-	x(Tnod(e,1),1);
-	l = element_length(x, Tnod, e);
-	R = (1/l)*[x2-x1 y2-y1 z2-z1 0 0 0;
-	0 0 0 x2-x1 y2-y1 z2-z1];
-	K_1 = A(Tmat(e))*E(Tmat(e))/l * [1 -1; -1 1];
-	K = R'*K_1*R;
-	
-	%store element matrix
-	for r = 1:2*nd
-		for s = 1:2*nd
-			K_el(r,s,e) = K(r,s);
-		end
-	end
-end
-
-%% Global matrix
-
-KG = zeros(ndof,ndof);
+m_bars = zeros(nel, 1);
 for e = 1:nel
-	for i = 1:2*nd
-		I = Tdof(e,i);
-		for j = 1:2*nd
-			J = Tdof(e,j);
-			KG(I,J) = K_el(i,j,e);
-		end
+	[R,len] = element_R_matrix(x, Tnod, e);
+	% Element mass = density * section area * length
+	m_bars(e,1) = m(Tmat(e,1),4) * m(Tmat(e,1),3) * len;
+end
+% Total mass
+m_tot = sum(m_bars) + m_s + m_pl;
+
+% SOLVER
+% =======================
+
+K = global_stiffness(x,Tnod,m,Tmat,Tdof);
+
+% Global_force: Drag + Weight
+% Weight
+W = m_tot*g0;
+
+% Terminal velocity: Drag = Weight
+Vt = sqrt(2*W/(rho_air*S*Cd));
+
+% Drag at terminal
+D = 0.5*rho_air*(Vt^2)*Cd*S;
+
+ %Force vector
+f = zeros(ndof,1);
+for e = 1:n
+	%Weight
+	mbars1 = sum(m_bars(Tnod(:,1) == e))/2;
+	mbars2 = sum(m_bars(Tnod(:,2) == e))/2;
+
+	f(e*3,1) = (mbars1 + mbars2) * g0; % (N)
+	if e > 5
+		% Surface weight addded and Drag substracted
+		f(e*3,1) = f(e*3,1) + (m_s/9)*g0 - (D/9);
 	end
 end
+f(3,1) = f(3,1) + m_pl*g0; % Payload weight added
 
-
-
-
-%% Global system of equations
-
+% Imposed (r) and free (l) degrees of freedom
 vr = 1:3; % Fixed DoF
 vl = 4:42; % Free DoF
+vr = [28 29]; % fixed points
+vl = setdiff(1:ndof,vr); % the other points
 
-K_LL = KG(vl,vl);
-K_LR = KG(vl,vr);
-K_RL = KG(vr,vl);
-K_RR = KG(vr,vr);
 
-u_l = zeros(length(vl),1);
-u_r = zeros(length(vr),1);
+[u,r] = global_displacements_reactions(K,f,vr);
+% u is the free displacement vector
+% r is the reactions vector
 
-Wpl=M*g0;
-Wc=Mc*g0;
-Wbl=Mbl*go;
-Wbs=Mbs*go;
-Ws=Ms*go;
-Wt=Mt*go;
-Drag=Wt; %Terminal Velocity condition
-
-F_ext=zeros(ndof,1);
-F_ext(3)= -Wpl-(Wc/2)*4;
-F_ext(6)= -(Wc/2)*5-(Wbs/2)*3;
-F_ext(9)= -(Wc/2)*5-(Wbs/2)*2;
-F_ext(12)= -(Wc/2)*5-(Wbs/2)*3;
-F_ext(15)= -(Wc/2)*5-(Wbs/2)*2;
-F_ext(18)= Drag/9-Ws/9-(Wc/2)-(Wbs/2)-(Wbl/2)*2;
-F_ext(21)= Drag/9-Ws/9-(Wc/2)*2-(Wbs/2)*2-(Wbl/2);
-F_ext(24)= Drag/9-Ws/9-(Wc/2)-(Wbs/2)-(Wbl/2)*2;
-F_ext(27)= Drag/9-Ws/9-(Wc/2)*2-(Wbs/2)-(Wbl/2)*2;
-F_ext(30)= Drag/9-Ws/9-(Wc/2)*4-(Wbs/2)*2-(Wbl/2)*6;
-F_ext(33)= Drag/9-Ws/9-(Wc/2)*2-(Wbs/2)-(Wbl/2)*2;
-F_ext(36)= Drag/9-Ws/9-(Wc/2)-(Wbs/2)-(Wbl/2)*2;
-F_ext(39)= Drag/9-Ws/9-(Wc/2)*2-(Wbs/2)*2-(Wbl/2);
-F_ext(42)= Drag/9-Ws/9-(Wc/2)-(Wbs/2)-(Wbl/2)*2;
-F_ext_l=F_ext(vl);
-F_ext_r=F_ext(vr);
-
-u_l=K_LL\(F_ext_l-K_LR*u_r);
-R=K_RR*u_r+K_RL*u_l-F_ext_r;
-
-%Store displacements
-u=zeros(ngl,1);
-u(vr)=u_r;
-u(vl)=u_l;
-
-k=1;
-for i=1:n
-	[I,J]=find(Tdn==k);
-	for j=1:nd
-		disp(I,j)=u(k);
-		k=k+1;
-	end
-end
-
-%% Strains and stresses
-
-for e=1:nel
-	x1=x(Tnod(e,1),1);
-	y1=x(Tnod(e,1),2);
-	z1=x(Tnod(e,1),3);
-	x2=x(Tnod(e,2),1);
-	y2=x(Tnod(e,2),2);
-	z2=x(Tnod(e,2),3);
-
-	l_el=sqrt((x2-x1)^2+(y2-y1)^2+(z2-z1)^2);
-
-	R=(1/l_el)*[x2-x1 y2-y1 z2-z1 0 0 0; 0 0 0 x2-x1 y2-y1 z2-z1];
-
-	%Obtain global element displacements
-	for r=1:nnod*nd
-		I=Tdof(e,r); %p, global degree of freedom
-		d_g(r,1)=u(I,1);
-	end
-
-	%Calculate local element displacements
-	d_l=R*d_g;  %Element displacements at local coordinates
-
-	%Calculate strain and stresses
-	epsilon(e)=(1/l_el)*[-1 1]*d_l; %Element strain
-
-	if(Tmat(e)==1)
-
-		sigma(e)=E1*epsilon(e); %Element stress
-
-	elseif(Tmat(e)==2)
-
-		sigma(e)=E2*epsilon(e);
-
-	end
-
-	stress_strain(e)=sigma(e)/epsilon(e);
-
-end
-
-plotDisp(x,Tnod,u',1)
-
-figure(1)
-plotStress(x,Tnod,stress_strain')
+%% Visualization
+% ======================
+[strain,stress] = strain_stress(x,Tnod,m,Tmat,Tdof,u);
+plotParachute([1],u,strain,stress,x,Tnod,Tmat)
