@@ -2,6 +2,9 @@
 %  Carlos Molina 2018
 %  Computational Methods - Master's Degree in Space and Aeronautical Engineering (MASE)
 %  Universitat Politecnica de Catalunya (UPC)
+%
+% This code can be also be found in my GitHub account:
+% https://github.com/cmolinaord/mase/tree/master/computational_methods/part2/assignment_1/src
 
 close all
 clear
