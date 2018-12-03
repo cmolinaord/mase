@@ -19,7 +19,7 @@ function [x, Tnod, Tmat, Tdof, Tdn] = get_input_data()
 	];
 
 	% Bar connectivities
-	Tnod = [%   A     B
+	Tnod = [
 	1     2  % 1
 	1     3  % 2
 	1     4  % 3
