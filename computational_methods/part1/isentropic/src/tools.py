@@ -19,15 +19,21 @@ class world(object):
 		return A
 
 class fluid(object):
-	def __init__(self, w, p0, T0):
+	def __init__(self, w, p0, T0, Vin):
 		self.phi 	= w.create_matrix(0)
 		self.phi_1 	= w.create_matrix(0)
 		self.p 	= w.create_matrix(p0)
 		self.T	= w.create_matrix(T0)
 		self.rho	= w.create_matrix(density(p0, T0, c.R))
-		self.Vx	= w.create_matrix(0)
+		self.Vin	= Vin
+		self.Vx	= w.create_matrix(Vin)
 		self.Vy	= w.create_matrix(0)
 		self.V	= w.create_matrix(0)
+
+class obstacle(object):
+	def __init__(self, c, r):
+		self.c = c
+		self.r = r
 
 def density(p, T, R):
 	# Calculate density of the gas given p (pressure), T (temperature) and

@@ -21,6 +21,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.pyplot import Circle
 import tools
+import cfd
 import const as c
 
 # Input parameters
@@ -47,6 +48,10 @@ compressible = True
 # Domain parameters (m)
 L = 20
 H = 10
+# Solid objects
+center = [L/2, H/2]
+radius = min(L,H)/6
+o = tools.obstacle(center, radius)
 
 # Printing input data
 print("ITERMAX = %i" % ITERMAX)
@@ -67,45 +72,14 @@ Vin = 3
 # Creation of the World
 w = tools.world(L, H, nx, ny)
 # Creation of the fluid
-f = tools.fluid(w, c.p0, c.T0)
+f = tools.fluid(w, c.p0, c.T0, Vin)
 
-# Initialization of boundary condition for Phi
-# Inlet (West border)
-for i in range(1, ny):
-	f.phi[i,:] 	= f.phi[i-1,0] + Vin*w.dx
-# North and South borders (Same phi as in the first column)
-f.phi[0,1:] 	= f.phi[0,0]
-f.phi[ny-1,1:] 	= f.phi[ny-1,0]
-# Copy initial conditions to phi_1
-f.phi_1[:,:] 	= f.phi[:,:]
-
-# Solid objects
-center = [L/2, H/2]
-radius = min(L,H)/6
-
-w.solid[:,:] = False
-# Defined walls in North and South
-w.solid[0,:] = True
-w.solid[ny-1,:] = True
-# Defined cylinder in the middle
-#Solid[5:45,20] = True
-for i in range(1,ny-1):
-	for j in range(1,nx-1):
-		dist = np.sqrt((w.x[j] - center[0])**2 + (w.y[i] - center[1])**2)
-		if dist < radius:
-			w.solid[i,j] = True
+# Boundary conditions computation
+w, f = cfd.boundary(w, f, o)
 
 # Iteration computing
 iter = 0
 error = 1
-
-#fig2 = plt.figure()
-#ax2 = fig2.gca()
-#circ = Circle(center, radius, fill=False)
-#ax2.add_patch(circ)
-#ax2.axis("equal")
-#plt.title("Density")
-
 
 while error > precission and iter < ITERMAX:
 	iter += 1
