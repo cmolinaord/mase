@@ -35,6 +35,12 @@ class obstacle(object):
 		self.c = c
 		self.r = r
 
+class options(object):
+	precission = 1e-3
+	itermax = 200
+	compressible = True
+	verbose = True
+
 def density(p, T, R):
 	# Calculate density of the gas given p (pressure), T (temperature) and
 	# the specific gas constant R

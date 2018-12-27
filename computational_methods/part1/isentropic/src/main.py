@@ -25,25 +25,24 @@ import cfd
 import const as c
 
 # Input parameters
-ITERMAX = 200
 nx = 60
 ny = 30
-precission = 1e-3
+
+# Load default options
+opt = tools.options()
 
 args = sys.argv
 if len(args) > 1:
-	ITERMAX = int(args[1])
+	opt.itermax = int(args[1])
 if len(args) > 3:
 	nx = int(args[2])
 	ny = int(args[3])
 if len(args) > 4:
-	precission = float(args[4])
+	opt.precission = float(args[4])
 elif len(args) > 5:
 	print("ERROR: Too many input arguments")
 	print("Exiting...")
 	exit()
-
-compressible = True
 
 # Domain parameters (m)
 L = 20
@@ -51,18 +50,17 @@ H = 10
 # Solid objects
 center = [L/2, H/2]
 radius = min(L,H)/6
-o = tools.obstacle(center, radius)
+obs = tools.obstacle(center, radius)
 
 # Printing input data
-print("ITERMAX = %i" % ITERMAX)
+print("Maximum iterations = %i" % opt.itermax)
 print("L = %1.1f" % L)
 print("H = %1.1f" % H)
 print("[nx,ny] = [%i,%i]" % (nx,ny))
-print("Precission = %1.1E" % precission)
-print("Compressible? %s" % ('Yes' if compressible else 'No'))
+print("Precission = %1.1E" % opt.precission)
+print("Compressible? %s" % ('Yes' if opt.compressible else 'No'))
 print("###########################")
 print(" ")
-
 
 tic = time.perf_counter()
 
@@ -73,40 +71,10 @@ Vin = 3
 w = tools.world(L, H, nx, ny)
 # Creation of the fluid
 f = tools.fluid(w, c.p0, c.T0, Vin)
-
 # Boundary conditions computation
-w, f = cfd.boundary(w, f, o)
-
-# Iteration computing
-iter = 0
-error = 1
-
-while error > precission and iter < ITERMAX:
-	iter += 1
-	for i in range(1, ny-1): # rows
-		for j in range (1, nx-1): # columns
-			f.phi_1[i,j] = tools.calc_phi(f.phi, f.rho, c.rho0, i, j, w)
-	# Last column boundary condition (normal outflow)
-	f.phi_1[:,nx-1] = f.phi[:,nx-2]
-	#print(np.round(phi*100)/100)
-	# Meassure error
-	error = np.max(np.abs(f.phi_1 - f.phi))
-
-	for i in range(1, ny-1): # rows
-		for j in range (1, nx-1): # columns
-			f.Vx[i,j], f.Vy[i,j] = tools.calc_vel(f.phi_1, f.rho, c.rho0, i, j, w, Vin)
-			f.V[i,j] = np.sqrt(f.Vx[i,j]**2 + f.Vx[i,j]**2)
-			# Energy conservation (calculated temperature)
-			if compressible:
-				f.T[i,j] = c.T0 + 0.5*(Vin**2 - f.V[i,j]**2)/c.c_p
-				# Isentropic condition (pressure calculated)
-				f.p[i,j] = c.p0 * (f.T[i,j]/c.T0)**c.gamma_exp
-	# Compute new pressure (if compressible case)
-	if compressible:
-		f.rho = tools.density(f.p, f.T, c.R)
-	f.phi[:,:] = f.phi_1[:,:]
-	if iter % 10 == 0:
-		print("Iteration %i: maximum error: %2.4e" %(iter, error))
+w, f = cfd.boundary(w, f, obs)
+# Computation of the fluid dynamic
+f = cfd.gauss_seidel(w, f, opt)
 
 toc = time.perf_counter() - tic
 print("Elapsed time: %1.2fs" % toc)
