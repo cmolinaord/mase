@@ -1,7 +1,7 @@
 OUTPUT_DIR = pdf
 SRC_DIR = tex
 TEX = latexmk -cd- -pdf -jobname=$(OUTPUT_DIR)/$(NAME) --shell-escape
-NAME = document_name
+NAME = isentropic
 BIBNAME = bib_name
 
 .PHONY: all $(NAME) $(NAME)_prev clean clean_all count_words debug_label_chapters debug_warnings

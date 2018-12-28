@@ -1,8 +1,32 @@
 \begin{abstract}
-This is an abstract
+In this exercise it's going to be studied a non-viscous irrotational fluid flows
+from the computational point of view. The aim of the work is to study the equations
+describing this type of fluids and how can we simulate them with a computer code.
+
+The document will briefly explain the physics involved in the problem,
+and how can it be transformed into the computer language. In a second part, the structure
+of the code is explained. And finally, some results of the calculations
+performed are shown, including some analysis for the computational performance.
 \end{abstract}
 
-\section{Introduction}
+\section{Physics of non-viscous fluids}
+
+The physics governing fluid dynamics is complex, and in the general case it is
+described by the Navier-Stokes equations. But as an approximation, the flow
+around a certain object can be separated in two zones:
+\begin{itemize}
+	\item \textbf{Boundary layer:} is the region close to solid surfaces, where
+	exists heat transfer and friction, which produces high gradients in speeds
+	and temperatures.
+	\item \textbf{Non-viscous regions:} the rest of the domain, where, as an
+	approximation, the previous effects can be neglected.
+\end{itemize}
+
+In this study it's going to be studied this non-viscous case, considering that the
+whole domain is under this assumption.
+
+
+
 
 \begin{figure}[h]
 	\centering
