@@ -3,7 +3,7 @@ Scripts and applications developed during my Master's Degree in Space and Aerona
 
 ## Computational Engineering
 This course has the purpouse of forming the students in the computational methods used in Aerospace Engineering to solve problems
-related with Fluid Dynamics, Heat & Mass tranfer and Estructural Stress.
+related with Fluid Dynamics, Heat & Mass tranfer and Structural Stress.
 
 ## Aerospace Laboratories
 This subject consist in a series o experimental sessions about aerospace topics. In particular, the practices will be the next:
