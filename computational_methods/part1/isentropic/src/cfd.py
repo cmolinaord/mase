@@ -35,7 +35,7 @@ def gauss_seidel(w, f, opt):
 	while error > opt.precission and iter < opt.itermax:
 		iter += 1
 		for i in range(1, w.ny-1): # rows
-			for j in range (1, w.nx-1): # columns
+			for j in range(1, w.nx-1): # columns
 				f.phi_1[i,j] = tools.calc_phi(f.phi, f.rho, c.rho0, i, j, w)
 		# Last column boundary condition (normal outflow)
 		f.phi_1[:,w.nx-1] = f.phi[:,w.nx-2]
@@ -62,3 +62,14 @@ def gauss_seidel(w, f, opt):
 		if iter % 10 == 0 and opt.verbose == True:
 			print("Iteration %i: maximum error: %2.4e" %(iter, error))
 	return f
+
+def obs_circulation(w, f):
+	circ =
+	for i in range(1, w.ny-1):
+		for j in range(1, w.nx-1):
+			if w.solid[i,j]:
+				# Sum up the circulation value
+				# For this I have to take into account each face velocity
+				# and also the sign criteria, and multiply each one by
+				# the face length.
+				# Then just sum up every point within the solid.
