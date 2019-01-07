@@ -2,31 +2,91 @@
 This is an abstract
 \end{abstract}
 
+\section*{Acronyms list}
+
+\begin{itemize}
+	\item \textbf{ACDS}. Attitude Determination and Control System.
+	\item \textbf{CDH}. Command and Data Handling subsystem.
+	\item \textbf{COMM}. Communications subsystem.
+	\item \textbf{DEP}. Deployment requirement.
+	\item \textbf{ENV}. Environmental systems.
+	\item \textbf{EPS}. Electrical Power Subsystem.
+	\item \textbf{IoT}. Internet of Things.
+	\item \textbf{MIS}. Mission requirement.
+	\item \textbf{OBC}. On-Board Computer.
+	\item \textbf{P/L}. Payload.
+	\item \textbf{PDR}. Preliminary Design Review.
+	\item \textbf{PM}. Project Manager.
+	\item \textbf{PRP}. Propulsion subsystem.
+	\item \textbf{PRR}. Preliminary Requirements Review.
+	\item \textbf{PTL}. Project Technical Leader.
+	\item \textbf{S/C}. Spacecraft.
+	\item \textbf{SS}. Subsystem.
+	\item \textbf{STR}. Structure subsystem.
+	\item \textbf{SYS}. System requirement.
+	\item \textbf{TBC}. To be checked.
+	\item \textbf{TBD}. To be decided.
+	\item \textbf{THC}. Thermal Control subsystem.
+\end{itemize}
+
 \section{Introduction}
 
 \section{Mission definition}
 
 \section{Subsystems definition}
 
-\subsection{Communications}
+\subsection{Communications (COMM)}
 Due to the fact that the main objective of the mission is to provide internet
 communications along the globe, this subsystem is considered critical for the
-mission success. The communications subsystem (COMMS) will be the one in charge
+mission success. The communications subsystem (COMM) will be the one in charge
 of providing effective transmission and reception of the radio signals between the
 satellite and both the ground stations and other satellites, within \MissionName
 constellation or third part satellites.
 
-\subsection{Command \& Data Handling}
+\subsubsection{Design process}
+In order to design the communications subsystem, we have to identify which are
+the communication needs of our satellites. That needs can be categorized in two types:
 
-\subsection{Attitude Determination and Control System}
+\begin{itemize}
+	\item \textbf{Ground communications}. That are communications between the
+	satellite itself with ground systems, both fixed ground stations (GS) and
+	smaller, portable, IoT devices.
+	\item \textbf{Inter-satellite communications}. Which are communication
+	with other satellites in orbit, within our constellation or not.
+\end{itemize}
 
-\subsection{Propulsion}
+This two needs sets a first requirement for the communications subsystem:
+the antenna system shall be separated in two independent antennas, one for the
+ground communications (in the following, called Earth-antenna) and another one for
+the inter-satellite communications (called space-antenna). This approach as also the
+advantage of some kind of redundancy; in case of failure of the Earth-antenna, the
+satellite could still be operative as a inter-satellite link.
 
-\subsection{Thermal Control}
+The two sets of antennas may have different base frequencies. The Earth-antenna
+frequency is restricted by the Earth-atmosphere blocking frequencies shown in
+figure \ref{fig:frequency_atmosphere_opacity}, so in the practice they are limited
+to the radio frequency range from 
 
-\subsection{Electrical Power System}
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=\textwidth]{img/earth_freq.png}
+	\caption{Atmospheric electromagnetic radiation opacity}
+	\label{fig:frequency_atmosphere_opacity}
+\end{figure}
 
-\subsection{Structural system}
+
+
+\subsection{Command \& Data Handling (CDH)}
+
+\subsection{Attitude Determination and Control System (ADCS)}
+
+\subsection{Propulsion (PRP)}
+
+\subsection{Thermal Control (THC)}
+
+\subsection{Electrical Power System (EPS)}
+
+\subsection{Structural system (STR)}
 
 
 %\begin{figure}[h]
