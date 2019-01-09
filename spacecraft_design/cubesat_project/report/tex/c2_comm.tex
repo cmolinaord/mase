@@ -25,10 +25,15 @@ the inter-satellite communications (called space-antenna). This approach as also
 advantage of some kind of redundancy; in case of failure of the Earth-antenna, the
 satellite could still be operative as a inter-satellite link.
 
-The two sets of antennas may have different base frequencies. The Earth-antenna
-frequency is restricted by the Earth-atmosphere blocking frequencies shown in
+The two sets of antennas are two different devices and may have different
+specifications, base frequency, transmission/reception patterns...
+
+\paragraph{Earth-antenna}
+
+The band frequency in what the Earth antenna would work
+is restricted by the Earth-atmosphere blocking frequencies, that are shown in
 figure \ref{fig:frequency_atmosphere_opacity}, so in the practice they are limited
-to the radio frequency range from
+to the radio frequency range from around 2 cm wavelength (15Ghz) to 20m (15MHz).
 
 \begin{figure}[h]
 	\centering
@@ -36,3 +41,17 @@ to the radio frequency range from
 	\caption{Atmospheric electromagnetic radiation opacity}
 	\label{fig:frequency_atmosphere_opacity}
 \end{figure}
+
+The chosen frequency shall be in the range of few gigahertz, because lower
+frequencies in the range of megahertz won't give us enough bandwidth to send and
+receive internet data; and higher frequencies use more complex antennae.
+
+For the Earth antenna there were initially two main architectures. One of them
+is to use a parabolic antenna that exists in the current cubesat state-of-art.
+The main problem with this antennas is that the bean shape is quite narrow and
+it would only cover a small portion of the Earth surface.
+
+Another approach very simple and cheap is to use a deployable helicoidal antenna.
+Which consist in some wires arranged in helicoidal way, that deploy by themselves
+when activated. There exists in the market some products that are tested to work
+fine and they are prepared for cubesat dimensions and mass requirements.
