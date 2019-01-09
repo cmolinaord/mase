@@ -55,3 +55,38 @@ Another approach very simple and cheap is to use a deployable helicoidal antenna
 Which consist in some wires arranged in helicoidal way, that deploy by themselves
 when activated. There exists in the market some products that are tested to work
 fine and they are prepared for cubesat dimensions and mass requirements.
+Also, this antennas use to exhibit a wider beam pattern (figure \ref{fig:helicoidal_pattern})
+than parabolic, allowing a greater ground surface coverage.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.5\textwidth]{img/Earth_antenna_pattern.png}
+	\caption{Transmission/reception pattern for an helicoidal antenna}
+	\label{fig:helicoidal_pattern}
+\end{figure}
+
+So finally, considering all the aspects, the final decission is to use an helicoidal
+deployable antenna, specifically it shall be the one that Helios \cite{Helios}
+manufactures, the \textit{Helios deployable antenna} \cite{HeliosAntenna},
+that has the following specifications:
+
+\begin{itemize}
+	\item RF Impedance (deployed): 50 Ohms
+	\item Max RF Power: 1 Watt
+	\item Frequency Range: 1290 to 1340 MHz (L-Band)
+	\item Electrical Power: 8 VDC at 7 Amps for 1 minute to deploy
+	\item Envelope Stowed ($l \times w \times h$): 100mm x 100mm x 35mm
+	\item Antenna Axial Height (deployed): 330mm
+	\item Supply Voltage: 8 VDC at 7 Amps for 1 minute to deploy
+	\item Operational Temperature Range: \SI{-40}{\degreeCelsius} to \SI{85}{\degreeCelsius}
+	\item Antenna main beam gain: 3dBi+
+	\item Deployment Duration: $60-90$s
+	\item Antenna Return Loss at resonance frequency: $ >10$ dB
+	\item Power Consumption:
+	\begin{itemize}
+		\item Nominal: 0
+		\item During Deployment: 8 VDC at 7 Amps for 1 minute to deploy
+	\end{itemize}
+	\item And also available in 436MHz and 2.3GHz
+	\item Interfaces: RF input/ output: MCX Coaxial Connector
+\end{itemize}
