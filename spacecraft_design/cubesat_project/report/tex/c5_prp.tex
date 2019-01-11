@@ -11,6 +11,8 @@ Changing the time-position of one satellite along the orbit is known as \textbf{
 	\label{fig:orbit_phasing}
 \end{figure}
 
+\subsubsection{Impulsive Maneuvers} \label{Impulsive}
+
 There are a number of methods of achieving the desired orbits for this constellation.
 \begin{enumerate}
 	\item Differing $\Delta V$
@@ -21,7 +23,9 @@ There are a number of methods of achieving the desired orbits for this constella
 	The third method is to launch all nine satellites to the 'phasing orbit'. As with method 2, the satellites would complete n-1 phasing orbits before using a velocity kick to reach the desired orbit. The benefit of this method is that eight of the satellites would only need one velocity change, rather than two, however, satellite 1 in the orbital family would need one extra velocity kick. Clearly, method 3 uses the least amount of propellant of all three methods, while also having the benefit of standardising the satellites' propulsion systems as each one would require an equal amount of propellant.
 \end{enumerate}
 
-\subsubsection{Required $\Delta V$}
+For the following analysis, method three will be used.
+
+\paragraph{Required $\Delta V$}
 For an orbit of nine satellites, $\phi = 40^{\circ}$. To calculate the required $\Delta V$ the following equations can be used, where subscript 1 refers to the original orbit and subscript 2 refers to the final orbit.
 
 \begin{equation}
@@ -55,21 +59,17 @@ The angular momentum of the orbit can then be calculated by using equation \ref{
 	\label{MMeq5}
 \end{equation}
 
-Finally, equation \ref{MMeq6} can be used to calculate the change in velocity,
-$\Delta V$ at the Point of Impulse.
+Finally, equation \ref{MMeq6} can be used to calculate the change in velocity, $\Delta V$ at the Point of Impulse.
 
 \begin{equation}
 	\Delta V = v_2 - v_1 = \frac{h_2}{r}-\frac{h_1}{r}
 	\label{MMeq6}
 \end{equation}
 
-The result of these calculations shows that a $\Delta V$ of $350 m/s$ is needed
-to transfer from the phasing orbit to the circular constellation orbit.
+The result of these calculations shows that a $\Delta V$ of $350 m/s$ is needed to transfer from the phasing orbit to the circular constellation orbit.
 
-With the required $\Delta V$ known, the Tsiolkovsky rocket equation (equation \ref{MMeq7})
-can be derived to estimate the required mass fraction of propellant for various propulsion
-systems (equation \ref{MMeq8}). To do this, the effective exhaust velocity of the thruster
-must be known.
+\paragraph{Propellant Mass Fraction}
+With the required $\Delta V$ known, the Tsiolkovsky rocket equation (equation \ref{MMeq7}) can be derived to estimate the required mass fraction of propellant for various propulsion systems (equation \ref{MMeq8}). To do this, the effective exhaust velocity of the thruster must be known.
 
 \begin{equation}
 	\Delta V = v_e ln \frac{m_0}{m_f}
@@ -81,18 +81,13 @@ must be known.
 	\label{MMeq8}
 \end{equation}
 
-As $v_e = g_0 I_{sp}$ we can approximate the mass fractions of propellant needed
-for a variety of thrusters of given $I_{sp}$, by Tummala and Dutta in \cite{Tummala}.
-From the previous equations, it is clear that a high $I_{sp}$ is desirable to
-minimise the mass fraction of the propellant, and thereby the mass of the
-propulsion system. Here, the propulsion system with the greatest Specific
-Impulse of each propellant type, except solar sails, is examined.
+As $v_e = g_0 I_{sp}$ we can approximate the mass fractions of propellant needed for a variety of thrusters of given $I_{sp}$, by Tummala and Dutta in \cite{Tummala}. From the previous equations, it is clear that a high $I_{sp}$ is desirable to minimise the mass fraction of the propellant, and thereby the mass of the propulsion system. Here, the propulsion system with the greatest Specific Impulse of each propellant type, except solar sails, is examined.
 
 \begin{table}[h!]
 	\centering
 	\begin{tabular}{c c c c c c }
 		\hline
-		Propellant & Manufacturer & Engine & $I_{sp}$ & $v_e$ & $m_p/m_0$ \\
+		Propellant & Manufacturer & Engine & $I_{sp}(s)$ & $v_e(m/s)$ & $m_p/m_0$ \\
 		\hline
 		Cold Gas & GOMSpace & MEMS Cold Gas & 62 & 608.22 & 0.438 \\
 		Liquid & Tethers Unlimited & HYDROS & 256 & 2511.36 & 0.130 \\
@@ -108,7 +103,7 @@ Impulse of each propellant type, except solar sails, is examined.
 	\label{MMtab1}
 \end{table}
 
-Proceeding with the four engines which require less than 5\% propellant mass, the practical limitations of the engines are laid out in table \ref{MMtab2}.
+Proceeding with the six engines which require less than 20\% propellant mass, the practical limitations of the engines are laid out in table \ref{MMtab2}.
 \\
 \begin{table}[h!]
 	\centering
@@ -116,6 +111,8 @@ Proceeding with the four engines which require less than 5\% propellant mass, th
 		\hline
 		Propellant & Manufacturer & Engine & Thruster Mass(kg) & Power(W) \\
 		\hline
+		Liquid & Thethers Unlimited & HYDROS & 1.87 & 25 \\
+		Solid & Orbital ATK & STAR 4G & 0.52 & N/A \\
 		Radio Frequency Ion & Busek & BIT-3 & 0.2 & 20-70 \\
 		Hall Effect & Sitael Aerospace & HT 400 & 0.9 & 250-800 \\
 		Electrospray & Busek & BET-100 & 0.329 & 5.5 \\
@@ -126,4 +123,21 @@ Proceeding with the four engines which require less than 5\% propellant mass, th
 	\label{MMtab2}
 \end{table}
 \\
-The power requirements of the Busek BIT-3 engine are unrealistic for a cubesat, therefore the best engine for this application is the Busek BET-100 due to the very low mass fraction of propellant required and the low power and weight associated with the engine. The module is 9 cm x 9 cm x 4 cm in size and delivers 100$\mu N$ of thrust at Specific Impulse of 1800 - 2300 s. A single module can deliver 85m/s to a 4kg satellite, thus the proposed propulsion system incorporates engines in parallel, the quantity depending on the final wet mass of the satellite, including the mass of the propulsion system itself.
+The solid propellant engine designed by Orbital ATK provides average thrust of 258N. 258N of thrust could give a 4kg satellite a 350m/s velocity change in 5.4 seconds. This could be considered an impulsive maneuver.
+
+Although the power required for this thruster is not available, the description of the engine given by Orbital ATK states that testing and development of the STAR 4G happened in January 2000. The catalogue blurb also states that the engine was developed as a low-cost, high mass fraction orbit adjust motor for use in deploying constellations of very small satellites (nanosatellites)" \cite{STAR4G}.
+
+The maximum propellant mass in the STAR 4G engine is 980 grams. As stated in table \ref{MMtab1}, the required propellant mass fraction for this engine is 0.124. Presuming a 3-U cubesat (4kg), this means the propellant mass would have to be 496 grams to achieve the desired $\Delta V$ to position this constellation. The total wet mass of the propulsion system is then 1.5kg, with a full tank of propellant. However, solid propellant cannot be extinguished once it is ignited so the mass of propellant carried on board the satellites should be exactly 496 grams, resulting in a total wet mass of 1.016 kg.
+
+\subsubsection{Low Thrust Maneuvers}
+\paragraph{Required $\Delta V$}
+The analysis for obtaining the required $\Delta V$ is similar for low and high thrust maneuvers because the satellite is in almost the same orbit in both cases, even during thrusting periods \cite{MIT}. Also, the $\Delta V$ is equal to the difference between beginning and ending orbital speeds. In practical terms however, the impulsive maneuver examined in \ref{Impulsive} requires a two-impulse Hohmann transfer between orbits, whereas the low thrust transfer uses continuous thrusting. This section will examine the low thrust orbit transfer as analysed in section \ref{Impulsive}, with one change. The orbit into which the satellites will be launched, initially, will be such that the period is  $1/27^{th}$ greater than the desired orbit period. The result is that after three orbits, the satellite will be phased to the desired position, relative to the satellite it follows. The classical orbital elements of such an orbit are easily obtained. The launch orbit will have a period of 6563.9 seconds which is at an average altitude of 1205.48 km above the surface of the earth.
+
+The required $\Delta V$ can be simply calculated as the difference between the two orbital velocities. It is found to be 294.89 m/s.
+
+The Busek BET-100 engine is appropriate for low trust maneuvers with its low mass, propellant mass fraction and power consumption. Electrospray technology use in cubesats is still relatively new after being introduced by NASA and MIT in 2013. There are still system reliability issues related to the scalable thrust and the lifetime of these engines.
+
+The low thrust maneuver offers no significant advantage over the impulsive maneuver, therefore the STAR 4G engine by Orbital ATK will be installed on the nanosatellites.
+
+\paragraph{Chosen Propulsion System}
+The Orbital ATK STAR 4G thruster shall be installed in the nanosatellites to provide an impulsive perigee kick maneuver and position the satellites in the desired orbits. The STAR 4G engine shall have a total wet mass of 1.016kg. The thruster's power consumption is not available although it is presumed to be reasonable, as the thruster is designed for positioning nanosatellites in orbit. The operating temperature range for this engine is between $4^\circ C$ and $32^\circ C$. The spherical thruster is 95mm in diameter and 108 mm in length including the nozzle, which has an expansion ratio of 56.8:1.
