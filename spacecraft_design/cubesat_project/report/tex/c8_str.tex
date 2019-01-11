@@ -12,7 +12,7 @@ of this PDR, it has been decided to use a 3 standardized units CubeSat structure
 It is a very common CubeSat size, so the chances of finding a cheap and good one
 is easier thanks to the wide variety of companies that design and build it.
 After an analysis of the different options, it has been decided to use the 3U
-CubeSat structure of the ISIS (Innovative Solutions In Space) company.
+CubeSat structure of the ISIS \cite{3U_structure} (Innovative Solutions In Space) company.
 Its characteristics are the following ones:\\
 
 \begin{table}[h!]
@@ -35,12 +35,12 @@ all the mass should be taken into account.\\
 
 \begin{figure}[h!]
 	\centering
-	\includegraphics[scale=0.5]{img/structures_3u.png}
+	\includegraphics[width=\textwidth]{img/structures_3u.png}
 	\caption{Different pictures of the 3U structure}
 	\label{fig:structures_3u}
 \end{figure}
 
-Furthermore, this structure is one of the cheapest ones, it fulfils the size
+Furthermore, this structure is one of the cheapest ones, it fulfills the size
 standards and its weight is low enough to introduce the required subsystems for
 the mission. Moreover, its origin, the ISIS company, ensures the demanded
 qualification and acceptance testing. This testing includes functional, vibration,
@@ -56,7 +56,9 @@ Having the size of each subsystem, they have been integrated in the order below.
 \paragraph{UNIT 1}
 The internal part of the unit only comprises the propulsion system, which is the subsystem which requires more volume.\\
 On the external part, the solar panels are located there, attached to the final edges of the CubeSat. They will be pointing to the deep space in order to receive the maximum possible solar radiation.\\
-Moreover, attached to the solar panels’ edges, there will be the antennas in charge of the inter-satellite communications.\\
+Moreover, forming an angle of around \SI{45}{\degree} with the plane of the
+deployed solar panels, there will be the four antennas in charge of the
+inter-satellite communications.\\
 
 \paragraph{UNIT 2}
 This intermediate unit has the function of allocating most of the little subsystems.
@@ -77,3 +79,12 @@ At launch phase, the deployable helicoidal antenna, which takes up the
 orbiting, it is deployed and points towards the Earth’s surface. The rest of the
 unit is fulfilled with the rest of the required Communications system, which is
 the main payload to perform the mission.\\
+
+The overall design of the cubesat can be seen in figure \ref{fig:cubesat_structure}
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=\textwidth]{img/Blueprint_grey.png}
+	\caption[Overall satellite structure]{Side and 3d views of the overall satellite structure}
+	\label{fig:cubesat_structure}
+\end{figure}
