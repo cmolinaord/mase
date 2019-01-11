@@ -4,12 +4,14 @@ The data handling system combines telemetry processing from multiple sources and
 command processing for downlink or internal spacecraft use. The primary requirement
 is to monitor and control the spacecraft. For small missions at least it is
 required to process housekeeping and command data.
+
 A command consists of a synchronization code, spacecraft address bits, command
 message bits, and error check bits. The sample rate depends on the greatest
 frequency component contained in the signal and must be two times bigger.
 Furthermore the input sampling rate is determined by the signal bandwidth.
 All input data needs to be converted to digital form and formatted into a
 serial stream of continuous data for downlink.
+
 All received commands must be validated prior to execution. It consists of
 receiving synchronization code, checking if correct number of bits, exactly
 matching the spacecraft address and any fixed-bit patterns and detecting no errors
@@ -19,17 +21,37 @@ are forwarded by the decoder for execution.
 \subsubsection{Design process}
 
 \paragraph{1. Telemetry and command processing tasks}
-In the first step of the design process determines which parts of the spacecraft need to be controlled and which monitored to accomplish the mission. The two main data typs are command data and telemetry data.
+In the first step of the design process determines which parts of the spacecraft need to be controlled and which monitored to accomplish the mission. The two main data types are command data and telemetry data.
+
 The command processing includes command rate, command channel number, command storage and the onboard computer use for commands. The capability to store commands is required if the spacecraft should control itself without view to a ground station or in the case of communication loss. As we intend to use inter satellite communication a command storage is highly needed. Furthermore for decision making regarding for example to which satellite to connect to a on board computer is recommended. The computer is used to store the commands, control the attitude with algorithms and other subsystems as communication.
+
 The telemetry processing focuses on housekeeping data, payload data, channel number for telemetry and onboard computer use for telemetry. This includes health and status of the spacecraft parts, feedback for onboard control of spacecraft functions and routing of payload or subsystem data to and from receivers and transmitters. As the quantity of telemetry input channels required for monitoring the spacecraft health is proportional to the size and complexity we don’t account for high number of telemetry channels.
+
 Though the quantity to achieve the primary mission requires a high number of payload and communication related channels. Therefore the quantity of data channels and its transfer rate is form importance for the system design.
-Furthermore there are some other functions which are executed by the command and data handling system. First of all the time tracking capability needs to be ensured to support attitude control, stored commands and data time tagging. In addition a computer watchdog is installed to determine a computer failure independent of the processor it self. This is necessary if the spacecraft should perform decision making processes on board. If the watch dog recognizes a failure the computer may reset, interrupts its actions until the ground station maintains the spacecraft. To give space to additional changes the channel number is enhanced by 10-25% if requirements grow.
+
+Furthermore there are some other functions which are executed by the command and data handling system. First of all the time tracking capability needs to be ensured to support attitude control, stored commands and data time tagging. In addition a computer watchdog is installed to determine a computer failure independent of the processor it self. This is necessary if the spacecraft should perform decision making processes on board. If the watch dog recognizes a failure the computer may reset, interrupts its actions until the ground station maintains the spacecraft. To give space to additional changes the channel number is enhanced by 10-25\% if requirements grow.
 
 \paragraph{2. Constrains to the control and data handling systems}
+
 The main constrain for a cubesat project like ours is the limited amount of money provide. Therefor cost effective solutions are preferred. Furthermore we don’t rely on a single cubesat instead on a whole constellation which shifts the focus to low hardware costs and neglectable software cost as they are applied to all cubesats.
+
 The reliability aspect can be split in two main categories: redundancy and quality. In general a low failure rate leads to a high confidence factor in the success of the mission. Through redundant systems the reliability can be increased dramatically, but also the systems mass, complexity and cost. Therefor no redundant command and control systems are considered, with exceptions of the computer watchdog. The second way to enhance the reliability is to use high quality parts. But as mentioned above the hardware price multiplies with the number of cubesats in the constellation, which increases the material price significantly.
+
  A serious concern is the effect of high radiation in space on the electronic devices. Radiation requirements can lead extended schedules and high cost. Furthermore system size and weight is affected and the choice of electrical components on the market is reduced. Thus double the development time and increase parts cost by a factor of ten. A cheaper solution is to predict the circuit behavior through simulation and analysis, which can be conducted for this project.
-There are three different way to design the bus network for the data handling and control system. The first one is a single- unit CDH system, which one unit for the telemetry and command system. This is a simple and centralized attempt, with the disadvantage for large satellites that each interface needs to be routed to single physical location for monitoring and control regardless of the distance. This could be a good approach for a small cubesat. In contrast there is the multiple unit CDH system which eliminates the dependency of a central unit. But is to complex for this project. The third solution is an integrated CDH system which combines command, telemetry, flight processing and attitude control in one system. These systems tend to be smaller and reduce the hardware requirements and costs due to a high power processor which coordinates each subsystem. However this system comes with high software requirements which affect the costs. Considering our cubesat project we will go for the third approach as is promises the lowest hardware costs.
+
+There are three different way to design the bus network for the data handling
+and control system. The first one is a single- unit CDH system, which one unit
+for the telemetry and command system. This is a simple and centralized attempt,
+with the disadvantage for large satellites that each interface needs to be routed
+to single physical location for monitoring and control regardless of the distance.
+This could be a good approach for a small cubesat. In contrast there is the multiple
+unit CDH system which eliminates the dependency of a central unit. But is to
+complex for this project. The third solution is an integrated CDH system which
+combines command, telemetry, flight processing and attitude control in one system.
+These systems tend to be smaller and reduce the hardware requirements and costs due
+to a high power processor which coordinates each subsystem. However this system
+comes with high software requirements which affect the costs. Considering our
+cubesat project we will go for the third approach as is promises the lowest hardware costs.
 
 \paragraph{3. Top level requirements}
 Based on the analysis above we derived the following requirements for the data handling and command system.
