@@ -61,12 +61,12 @@ than parabolic, allowing a greater ground surface coverage.
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=0.5\textwidth]{img/Earth_antenna_pattern.png}
-	\caption{Transmission/reception pattern for an helicoidal antenna}
+	\caption[Helicoidal antenna radiation pattern]{Transmission/reception pattern for an helicoidal antenna}
 	\label{fig:helicoidal_pattern}
 \end{figure}
 
 So finally, considering all the aspects, the final decission is to use an helicoidal
-deployable antenna, specifically it shall be the one that Helios \cite{Helios}
+deployable antenna, specifically it shall be the one that Helios
 manufactures, the \textit{Helios deployable antenna} \cite{HeliosAntenna},
 that has the following specifications:
 
@@ -90,3 +90,36 @@ that has the following specifications:
 	\item And also available in 436MHz and 2.3GHz
 	\item Interfaces: RF input/ output: MCX Coaxial Connector
 \end{itemize}
+
+\paragraph{Space-antenna}
+
+The requirements for the space antenna, in terms of frequency are not so strict
+that in the case of Earth communications, because in space, inter-satellite
+communications there are more available bands. So one interesting point is that
+this antenna could have a wide range of working frequencies, so this way the
+satellite could be able to communicate with other third party satellites.
+
+Other point is that this antenna shall be almost omnidirectional, because
+the other satellites could be located almost along all the directions. Most of
+them, at least, the ones from \MissionName constellation, would be located in
+at the same altitude, in the same orbit, or in one of the intercepting orbits when
+the satellites crosses the North/South poles. So that means that they would form
+an angle of around \SI{90}{\degree} with the Z direction (Z is pointing to the
+center of the Earth). So the best solution in this way should be a dipole antenna.
+
+Ideal dipole antenna has a pattern that is omnidirectional in the plane perpendicular
+to the wire axis, as shown in the figure \ref{fig:dipole_pattern}. So the best solution
+may be to use one of this, positioned in Z direction, so it would cover all the
+horizon. But, in order to have redundancy and also a bit larger coverage, it can
+be used four of them, positioned in the four corners of the back side of the
+S/C (the one pointing to the space), with an angle of \SI{45}{\degree} from the zenith, so
+the sum of the patterns would result in a slightly wider coverage.
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.5\textwidth]{img/Dipole_pattern.png}
+	\caption[Ideal dipole radiation pattern]{Transmission/reception pattern for an ideal dipole antenna.
+	This is a cross section in the vertical plane, rotating this shape around
+	the axis of the antenna one would get the 3d pattern.}
+	\label{fig:dipole_pattern}
+\end{figure}
