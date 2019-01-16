@@ -101,8 +101,28 @@ up \cite{Delfi-n3xt}.
 
 \subsubsection{Selection and Sizing of ADCS Hardware}
 
-With some potential options of ADCS control methods mentioned in the previous section, what needs to come next is the specific selection and sizing of both actuator and sensor hardware. In selecting actuator hardware there are a variety of factors that need to be considered, firstly the torque requirements but also in the case of moving parts such as reaction wheels, the characteristics of vibrations that could lead to Jitter.
-With actuation methods considered, it is also very important for attitude determination methods to be carefully selected. Sun sensors, with their high accuracy and relatively low power requirement provide a good starting point for the attitude determination element of the system. With a combination of 5-6 sensors allowing for optimised performance and sufficient redundancy. \cite{Delfi-n3xt} The clear disadvantage with these sensors is however that with the planned orbit of the CubeSat’s within this mission, they will all spend a period of time where a view of the sun is not available. To provide determination data during eclipse conditions, magnetometers could be utilised with their low power usage and with the proposed low earth orbit however they can lack accuracy, typically; +/- 0.5° to +/- 3°. If during future analysis a greater attitude determination accuracy becomes a requirement, horizon sensors could be employed with accuracy’s between +/- 0.1 and +/- 0.1 for a fixed head sensor configuration. They can however bring with them a greater power requirement from the EPS.
+With some potential options of ADCS control methods mentioned in the previous section,
+what needs to come next is the specific selection and sizing of both actuator and
+sensor hardware. In selecting actuator hardware there are a variety of factors that
+need to be considered, firstly the torque requirements but also in the case of
+moving parts such as reaction wheels, the characteristics of vibrations that could
+lead to Jitter.
+
+With actuation methods considered, it is also very important for attitude
+determination methods to be carefully selected. Sun sensors, with their high
+accuracy and relatively low power requirement provide a good starting point
+for the attitude determination element of the system. With a combination of
+5-6 sensors allowing for optimised performance and sufficient redundancy.
+\cite{Delfi-n3xt} The clear disadvantage with these sensors is however that
+with the planned orbit of the CubeSat’s within this mission, they will all spend
+a period of time where a view of the sun is not available. To provide determination
+data during eclipse conditions, magnetometers could be utilised with their low power
+usage and with the proposed low earth orbit however they can lack accuracy, typically;
++/- \SI{0.5}{\degree} to +/- \SI{3}{\degree}. If during future analysis a greater attitude
+determination accuracy becomes a requirement, horizon sensors could be employed
+with accuracy’s between +/- \SI{0.01}{\degree} and +/- \SI{0.1}{\degree} for a
+fixed head sensor configuration. They can however bring with them a greater power
+requirement from the EPS.
 
 \subsubsection{Define Determination and Control Algorithms}
 

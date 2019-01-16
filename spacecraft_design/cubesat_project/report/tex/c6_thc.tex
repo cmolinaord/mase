@@ -157,7 +157,7 @@ are no further test required \cite{NASA_thermal}.
 The reproducibility, adaptability, low weight and passivity of the system are
 the clear advantages and give reason enough to prefer this system. \cite{Thermal_NASA_patent}
 
-\subsection{Worst Case Scenario}
+\subsubsection{Worst Case Scenario}
 
 The greatest thermal hazard is overheating. The worst hot condition corresponds
 to the case in which the satellite with maximum heat dissipation of the components
@@ -281,3 +281,23 @@ permanent magnet combined with hysteresis dampers the satellite is doing two
 rotations per orbit. This provides the advantage of thermal stabilization of the
 satellite because the angle between the CubeSat and the solar flux vector is
 continuously changing \cite{wiki_thermal}.
+
+Finally next table \ref{tab:temp_limit}, shows the temperature limits for every device in the subsystems
+of the S/C:
+
+\begin{table}[]
+	\begin{tabular}{lllll}
+		\hline
+		& \multicolumn{2}{l}{Operating Temperatures} & \multicolumn{2}{l}{Surviving temperatures} \\
+		Components                                 & Tmin ($^\circ$)& Tmax ($^\circ$)& Tmin ($^\circ$)& Tmax ($^\circ$)  \\ \hline
+		ISIS TXS High Data rate S-band transmitter & -10                  & 55                  & -40                  & 60                  \\
+		Helios deployable antenna                  & -15                  & 50                  & -60                  & 60                  \\
+		Deployable turnstile antenna system        & -10                  & 50                  & -20                  & 60                  \\
+		Solar Panels                               & -40                  & 125                 & -60                  & 140                 \\
+		Battery                                    & -5                   & 45                  & -15                  & 60                  \\
+		Structures                                 & -40                  & 80                  & -50                  & 100                 \\
+		NanoMind CPU                               & -30                  & 85                  & -45                  & 95 \\ \hline
+	\end{tabular}
+	\caption{Temperature limits for all devices in the spacecraft}
+	\label{tab:temp_limit}
+\end{table}
