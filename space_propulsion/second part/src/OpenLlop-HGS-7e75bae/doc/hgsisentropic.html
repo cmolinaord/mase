@@ -1,0 +1,160 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>hgsisentropic</title><meta name="generator" content="MATLAB 8.4"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2015-06-05"><meta name="DC.source" content="hgsisentropic.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body>
+  <h1>hgsisentropic</h1>
+  Computes an isentropic expansion assuming either frozen flow (reactions are slow enough to suppose that the gas balance in the mixture is not broken) or shifting flow (balance is restored instantaneously on each point of the nozzle).
+  <div class="content">
+  <pre class="codeinput"><span class="keyword">function</span> [ T2,n2,v2,M2 ] = hgsisentropic( species,n1,T1,P1,P2,eql,solver,Tstar,options )
+<span class="comment">%***********************************************************************************************************</span>
+<span class="comment">%* HGS 1.3</span>
+<span class="comment">%* By Arnau Miro, Pau Manent and Manel Soria</span>
+<span class="comment">%</span>
+<span class="comment">%* LLOP, ETSEIAT UPC</span>
+<span class="comment">%***********************************************************************************************************</span>
+<span class="comment">%</span>
+<span class="comment">% Expansion: Isentropic expansion (frozen or shifting flow)</span>
+<span class="comment">% For any issues with the code see the documentation manual.</span>
+<span class="comment">%</span>
+<span class="comment">% Usage:</span>
+<span class="comment">%       [T2,n2,v2,M2]=HGSISENTROPIC( species,n1,T1,P1,P2,eql,solver,Tstar,options )</span>
+<span class="comment">%</span>
+<span class="comment">% Inputs:</span>
+<span class="comment">%   species       -&gt; Cell array with the species of the inlet mixture</span>
+<span class="comment">%   n1                -&gt; Vector for the number of mols of each inlet species</span>
+<span class="comment">%   T1 [K]          -&gt; Inlet temperature</span>
+<span class="comment">%   P1 [bar]      -&gt; Pressure of the chamber</span>
+<span class="comment">%   P2 [bar]      -&gt; Outlet pressure</span>
+<span class="comment">%   eq1              -&gt; 'shifting' or 'frozen'</span>
+<span class="comment">%   solver         -&gt; Select solver from fsolve/fzero to hgsfsolve</span>
+<span class="comment">%   Tstar           -&gt; Temperature for start solver iteration</span>
+<span class="comment">%   options (optional) -&gt; Options of the solver to be used. For Matlab solvers use the</span>
+<span class="comment">%     OPTIMSET structure to generate the options structure. For custom</span>
+<span class="comment">%     hgsfzero generate the following structure:</span>
+<span class="comment">%</span>
+<span class="comment">%       options = struct('x2',5000,'fchange',2,'epsx',1e-1,'epsy',1e-4,'maxite',200,'info',[]);</span>
+<span class="comment">%</span>
+<span class="comment">%     Where info can remain empty if nothing is to be set in screen.</span>
+<span class="comment">%</span>
+<span class="comment">% Output:</span>
+<span class="comment">%   T2              -&gt; Products temperature (K)</span>
+<span class="comment">%   n2              -&gt; Vector for the number of mols of each outlet species</span>
+<span class="comment">%   v2              -&gt; outlet velocity m/s, assuming inlet velocity is 0</span>
+<span class="comment">%   M2             -&gt; outlet Mach number, assuming inlet velocity is 0</span>
+<span class="comment">%</span>
+<span class="comment">% See also HGSEQ, HGSPROP, HGSSINGLE, HGSTP, HGSFZERO</span>
+<span class="comment">%</span>
+<span class="comment">%   This code is part of the HGS TOOLBOX</span>
+<span class="comment">%   OpenLLOP, UPC-ETSEIAT 2014-2015</span>
+
+<span class="comment">% If info not inputed make it empty.</span>
+<span class="keyword">if</span> ~exist(<span class="string">'solver'</span>,<span class="string">'var'</span>), solver=<span class="string">'hgsfzero'</span>; <span class="keyword">end</span>
+<span class="keyword">if</span> ~exist(<span class="string">'options'</span>,<span class="string">'var'</span>), options=[]; <span class="keyword">end</span>
+<span class="keyword">if</span> ~exist(<span class="string">'Tstar'</span>,<span class="string">'var'</span>) || isempty(Tstar), Tstar=T1/2; <span class="keyword">end</span>
+
+<span class="keyword">if</span> strcmpi(eql,<span class="string">'shifting'</span>)==0 &amp;&amp; strcmpi(eql,<span class="string">'frozen'</span>)==0
+    error(<span class="string">'eql should be ''shifting'' or ''frozen'''</span>);
+<span class="keyword">end</span>
+
+[~,~,MM1,~,~,~,H1,~,S1]=hgsprop(species,n1,T1,P1); <span class="comment">% Inlet properties</span>
+
+m1=sum(n1)*MM1*1e-3;
+h1=H1/m1;
+
+<span class="comment">% Solving the problem</span>
+T2 = hgssolve(@DeltaS,Tstar,solver,options);
+
+<span class="keyword">if</span> strcmpi(eql,<span class="string">'shifting'</span>)==1
+    n2=hgseq(species,n1,T2,P2);
+<span class="keyword">else</span>
+    n2=n1;
+<span class="keyword">end</span>
+
+
+[~,~,MM2,~,~,a2,H2,~,S2]=hgsprop(species,n2,T2,P2); <span class="comment">% Inlet properties</span>
+
+m2=sum(n2)*MM2*1e-3;
+h2=H2/m2;
+
+v2=sqrt(2*1000*(h1-h2)); <span class="comment">% Enthalpy must be en J/kg !</span>
+
+M2=v2/a2;
+
+<span class="keyword">function</span> DeltaS=DeltaS(T)
+    <span class="keyword">if</span> strcmpi(eql,<span class="string">'shifting'</span>)==1
+        n2=n1;
+        n2=hgseq(species,n1,T,P2); <span class="comment">% Shifting</span>
+    <span class="keyword">else</span>
+        n2=n1; <span class="comment">% frozen</span>
+    <span class="keyword">end</span>
+    [~,~,~,~,~,~,~,~,S2]=hgsprop(species,n2,T,P2);
+    DeltaS=S2-S1;
+<span class="keyword">end</span>
+
+<span class="keyword">end</span>
+</pre><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2014b</a><br></p></div></body></html>

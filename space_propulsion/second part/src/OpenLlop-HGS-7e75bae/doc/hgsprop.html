@@ -1,0 +1,136 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>hgsprop</title><meta name="generator" content="MATLAB 8.4"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2015-06-05"><meta name="DC.source" content="hgsprop.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+ </style></head><body>
+ <h1>hgsprop</h1>
+ This function computes
+function computes properties for a single element or mixtures whose temperatures range from 200 K to 6000 K 
+ <div class="content"><pre class="codeinput"><span class="keyword">function</span> [Cp,Cv,MM,Rg,gamma,a,H,G,S]=hgsprop(species,n,T,P)
+<span class="comment">%***********************************************************************************************************</span>
+<span class="comment">%* HGS 1.3</span>
+<span class="comment">%* By Arnau Miro, Pau Manent and Manel Soria</span>
+<span class="comment">%</span>
+<span class="comment">%* LLOP, ETSEIAT UPC</span>
+<span class="comment">%***********************************************************************************************************</span>
+<span class="comment">%</span>
+<span class="comment">% Properties: properties of a mixture of gases.</span>
+<span class="comment">% For any issues with the code see the documentation manual.</span>
+<span class="comment">%</span>
+<span class="comment">% Usage:</span>
+<span class="comment">%       [Cp,Cv,MM,Rg,gamma,a,H,G,S]=HGSPROP(species,n,T,P)</span>
+<span class="comment">%</span>
+<span class="comment">% Inputs:</span>
+<span class="comment">%   species         -&gt; Cell array with the species of the mixture</span>
+<span class="comment">%   n               -&gt; Vector for the number of mols of the species</span>
+<span class="comment">%   T [K]           -&gt; Temperature of the mixture</span>
+<span class="comment">%   p [bar]         -&gt; Pressure of the mixture</span>
+<span class="comment">%</span>
+<span class="comment">% Output:</span>
+<span class="comment">%   Cp [kJ/molK]  	-&gt; Heat coef at constant pressure</span>
+<span class="comment">%   Cv [kJ/molK]    -&gt; Heat coef at constant volume</span>
+<span class="comment">%   MM [g/mol]      -&gt; Molar mass of the mixture</span>
+<span class="comment">%   Rg [kJ/kgK]     -&gt; Gas constant of the mixture</span>
+<span class="comment">%   gamma           -&gt; Gamma coef of the mixture</span>
+<span class="comment">%   a  [m/s]        -&gt; Sound speed of the mixture</span>
+<span class="comment">%   H  [kJ]         -&gt; Enthalpy of the mixture</span>
+<span class="comment">%   G  [kJ]         -&gt; Gibbs free energy of the mixture</span>
+<span class="comment">%   S  [kJ/K]         -&gt; Entropy of the mixture</span>
+<span class="comment">%</span>
+<span class="comment">% See also HGSEQ, HGSISENTROPIC, HGSSINGLE, HGSTP</span>
+<span class="comment">%</span>
+<span class="comment">%   This code is part of the HGS TOOLBOX</span>
+<span class="comment">%   OpenLLOP, UPC-ETSEIAT 2014-2015</span>
+
+R = 8.3144621/1000;  <span class="comment">%[kJ mol^-1 K^-1]</span>
+
+<span class="comment">% Search the identificators and the data of each specie</span>
+len_species = length(species);
+id_species = zeros(len_species,1);
+<span class="keyword">for</span> i=1:len_species
+    id_species(i)=hgsid(species{i});
+<span class="keyword">end</span>
+
+Data=hgsDB(id_species);
+
+Cp=hgsmix(Data,<span class="string">'cp'</span>,T,P,n);<span class="comment">% kJ/(mol*K)</span>
+Cv=Cp-R;<span class="comment">% kJ/(mol*K)</span>
+gamma=Cp/Cv;
+M = zeros(len_species,1);
+<span class="keyword">for</span> i=1:len_species
+    M(i)=Data{i}.M;
+<span class="keyword">end</span>
+MM=dot(n,M)/sum(n); <span class="comment">%[g/mol]</span>
+Rg=1000*R/MM; <span class="comment">%[kJ/(KgK)]</span>
+a=sqrt(gamma*1e3*Rg*T);
+
+H=dot(n,hgsmix(Data,<span class="string">'h'</span>,T,P,n));<span class="comment">% kJ</span>
+G=dot(n,hgsmix(Data,<span class="string">'g'</span>,T,P,n));<span class="comment">% kJ</span>
+S=dot(n,hgsmix(Data,<span class="string">'s'</span>,T,P,n));<span class="comment">% kJ</span>
+
+<span class="keyword">end</span>
+</pre><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2014b</a><br></p></div></body></html>

@@ -1,0 +1,55 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>HGS Manual</title>
+</head>
+
+<body>
+<h1>HGS. Chemical Equilibrium Calculation</h1>
+<p>
+HGS aims to provide an open source and comprehensive approach to rocket combustion problems and further isentropic expansion using the NASA polynomial approach.<br><br>
+
+Full version of this code can be downloaded from <a href="http://www.mathworks.es/matlabcentral/fileexchange/40862-hgs-chemical-equilibrium-calculation">Matlab File Exchange</a>.
+</p>
+<h2>Developers</h2>
+<p>
+The code has been developed inside the rocket engines subject on ETSEIAT (UPC) by the students: <br>
+Pau Manent, Arnau Miró and Eva Astrid <br>
+with the supervision of professors: <br>
+Manel Soria and Ramón Carreras.<br><br>
+
+To work properly, the code requires BurcatDB.mat to be on the same folder. This file contains all data from the NASA polynomial to compute gas properties.<br><br>
+
+For further reference about the code see the documentation attached or email at: open(dot)llop(at)gmail(dot)com
+</p>
+<h2><a href="functions.html">Functions</a></h2>
+<ul>
+<li> <a href="hgseq.html">hgseq</a>: This function computes the chemical equilibrium of species.</li>
+<li><a href="hgsisentropic.html">hgsisentropic</a>: Computes an isentropic expansion assuming either frozen or shifting flow.</li>
+<li><a href="hgsprop.html">hgsprop</a>: This function computes
+function computes properties for a single element or mixtures whose temperatures range from 200 K to 6000 K.</li>
+<li><a href="hgssingle.html">hgssingle</a>: This function computes the enthalpy, entropy or Gibbs free energy of a single element. The temperature must be set within a range from 200 K to 6000 K.</li>
+<li><a href="hgsTp.html">hgsTp</a>: Computes the adiabatic flame temperature of a reaction (with dissociation).</li>
+</ul>
+<h2>List of examples</h2>
+<ol>
+<li><a href="../HGS/html/Ex00_properties.html">00: Properties of single elements and mixtures</a></li>
+<li><a href="../HGS/html/Ex00_properties.html">01: CH4 adiabatic temperature combustion without dissociation</a></li>
+<li><a href="../HGS/html/Ex02_H2O2.html">02: Adiabatic H2O2 decomposition</a></li>
+<li><a href="../HGS/html/Ex02b_H2O2_liquid_V2.html">02b: V2 Turbopump example (liquid H2O2 adiabatic decomposition)</a></li>
+<li><a href="../HGS/html/Ex03_eq_CO2.html">03: CO2 dissociation equilibrium solved with K</a></li>
+<li><a href="../HGS/html/Ex03b_eq_CO2.html">03b: CO2 dissociation equilibrium solved with K</a></li>
+<li><a href="../HGS/Ex04_equilibrium_H2_O2.html">04: H2O equilibrium dissociation for different values of temperature (T)</a></li>
+<li><a href="../HGS/html/Ex04b_adiabatic_flame_T.html">04b: Adiabatic flame temperature with dissociation this code is an example of how hgsTp works</a></li>
+<li><a href="../HGS/html/Ex05_H2_O2_reaction_enthalpy_change.html">05: Adiabatic H2 / O2 reaction</a> </li>
+<li><a href="../HGS/html/Ex05b_H2_O2_reaction_enthalpy_change.html">05b: Adiabatic H2 / O2 reaction using hgsTp</a></li>
+<li><a href="../HGS/html/Ex05c_C3H8.html">05c: Adiabatic C3H8 reaction</a></li>
+<li><a href="../HGS/html/Ex06_LOX_combustion.html">06: LOX - LH2 combustion</a></li>
+<li><a href="../HGS/html/Ex07_isentropic_comparison_rpa.html">07: isentropic comparison with RPA software</a></li>
+<li><a href="../HGS/html/Ex08_Isp_vs_OF_ratio.html">08: ISP vs OF ratio</a></li>
+<li><a href="../HGS/html/Ex09_RP1.html">09: Comparison between hgs / rpa using RP-1</a></li>
+<li><a href="../HGS/html/Ex10_solvers.html">10: Solvers</a></li>
+</ol>
+</body>
+</html>

@@ -1,0 +1,270 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>hgseq</title><meta name="generator" content="MATLAB 8.4"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2015-06-05"><meta name="DC.source" content="hgseq.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body>
+  <h1>hgseq</h1>
+  This function computes the chemical equilibrium of species.
+  <div class="content"><pre class="codeinput"><span class="keyword">function</span> [neq,deltaG] = hgseq(species,n0,T,p,options)
+<span class="comment">%***********************************************************************************************************</span>
+<span class="comment">%* HGS 1.3</span>
+<span class="comment">%* By Arnau Miro, Pau Manent and Manel Soria</span>
+<span class="comment">%</span>
+<span class="comment">%* LLOP, ETSEIAT UPC</span>
+<span class="comment">%***********************************************************************************************************</span>
+<span class="comment">%</span>
+<span class="comment">% Equilibrium: Chemical equilibrium of a group of species.</span>
+<span class="comment">% For any issues with the code see the documentation manual.</span>
+<span class="comment">%</span>
+<span class="comment">% Usage:</span>
+<span class="comment">%       [neq,deltaG] = HGSEQ(species,n0,T,p,options)</span>
+<span class="comment">%</span>
+<span class="comment">% Inputs:</span>
+<span class="comment">%   species -&gt; Cell array with the species of the reaction</span>
+<span class="comment">%               eg. {'H2' 'O2' 'H2O' 'H' 'O' 'OH'}</span>
+<span class="comment">%   n   	-&gt; Vector for the number of mols of the reactives</span>
+<span class="comment">%               eg. [2 1 0 0 0 0 ] means 2 mol of H2, one of O2 and zero of</span>
+<span class="comment">%               the rest</span>
+<span class="comment">%   T [K]   -&gt; Temperature in which the reaction occurs</span>
+<span class="comment">%   p [bar] -&gt; Pressure in which the reaction occurs</span>
+<span class="comment">%</span>
+<span class="comment">%  Options: Options for the solver are given in the form of optimset</span>
+<span class="comment">%  function. For more information, refer to FMINCON and OPTIMSET.</span>
+<span class="comment">%</span>
+<span class="comment">% Output:</span>
+<span class="comment">%   neq   	-&gt; Number of mols at equilibrium for given species</span>
+<span class="comment">%               order of index for given example:</span>
+<span class="comment">%               H2  O2  H2O  H  O  OH</span>
+<span class="comment">%               1   2   3    4  5  6</span>
+<span class="comment">%  deltaG -&gt; Minimum value of the Gibbs free energy function</span>
+<span class="comment">%</span>
+<span class="comment">% See also HGSISENTROPIC, HGSPROP, HGSSINGLE, HGSTP, FMINCON, OPTIMSET</span>
+<span class="comment">%</span>
+<span class="comment">%   This code is part of the HGS TOOLBOX</span>
+<span class="comment">%   OpenLLOP, UPC-ETSEIAT 2014-2015</span>
+
+<span class="comment">% If no options are provided, use a default</span>
+<span class="keyword">if</span> ( ~exist(<span class="string">'options'</span>,<span class="string">'var'</span>) || isempty(options) )
+    options=optimset(<span class="string">'Algorithm'</span>,<span class="string">'interior-point'</span>,<span class="string">'Display'</span>,<span class="string">'off'</span>,<span class="string">'TolFun'</span>,1e-9,<span class="string">'Tolx'</span>,1e-9);
+<span class="keyword">end</span>
+
+<span class="comment">%Take the identification number of every specie ang keep in the id vector</span>
+len = length(species);
+id = zeros(len,1);
+<span class="keyword">for</span> i=1:len
+    id(i)=hgsid(species{i});
+<span class="keyword">end</span>
+<span class="comment">%Take the data stored in the BurcatDB MAT-file for the species introduced</span>
+Data=hgsDB(id);
+
+<span class="comment">%Function to minimize, free energy of Gibbs</span>
+gtotal=@(n) dot(n,hgsmix(Data,<span class="string">'g'</span>,T,p,n));
+
+<span class="comment">%Disequality restrictions Ax&lt;b.</span>
+<span class="comment">%The concentration of each specie must to be 0 or a positive number, necer</span>
+<span class="comment">%negative</span>
+A=eye(len,len);
+A=-A;
+b=zeros(len,1);
+
+<span class="comment">%Equality restriction Ax=b</span>
+<span class="comment">%The total mols of each element must to conserve</span>
+<span class="comment">%system_matrix</span>
+[Aeq,beq]=system_matrix(species,n0);
+
+<span class="comment">%Solution to the problem</span>
+[n,deltaG,exitflag]=fmincon(gtotal,n0,A,b,Aeq,beq,[],[],[],options);
+neq=n;
+
+<span class="keyword">if</span> exitflag~=1 &amp;&amp; exitflag~=2 <span class="comment">% Manel</span>
+    error(<span class="string">'hgseq: fmincon failed to find equilibrium'</span>)
+<span class="keyword">end</span>
+
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> [M,b]=system_matrix(species,n_o)
+<span class="comment">%***********************************************************************************************************</span>
+<span class="comment">%* HGS 1.1</span>
+<span class="comment">%* By Arnau Miro, Pau Manent, Eva Astrid Jara</span>
+<span class="comment">%* Supervised by Manel Soria and Ramon Carreras</span>
+<span class="comment">%* LLOP, ETSEIAT UPC</span>
+<span class="comment">%***********************************************************************************************************</span>
+<span class="comment">%</span>
+<span class="comment">% For any issues with the code see the documentation manual</span>
+<span class="comment">%</span>
+<span class="comment">% For internal use of the code</span>
+<span class="comment">%</span>
+<span class="comment">%NOMENCLATURE</span>
+<span class="comment">%el -&gt; element</span>
+<span class="comment">%el2-&gt; element2, in the string, position after element</span>
+<span class="comment">%el3-&gt; element3, in the string, position after element2</span>
+<span class="comment">%su -&gt; substance, specie</span>
+<span class="comment">%f  -&gt; row of the system matrix</span>
+<span class="comment">%j  -&gt; roll of the system matrix</span>
+<span class="comment">%m  -&gt; multiplicator, feed the matrix</span>
+<span class="comment">%elecomp -&gt; String vector that contain the elements apeared before</span>
+<span class="comment">%example, elecomp={'H', 'O', 'Al'}, it no contents species, only elements</span>
+
+elecomp={<span class="string">' '</span>};
+B=zeros(10,length(species));
+c=zeros(1,10);
+
+<span class="keyword">for</span> j=1:length(species)
+    <span class="comment">%Read every specie</span>
+    su=cell2mat(species(j));
+
+    <span class="comment">%Search every element in the specie</span>
+    <span class="keyword">for</span> i=1:length(su)
+        el=su(i);
+        <span class="comment">% The content of the parentheses is not important in the matrix building.</span>
+        <span class="comment">% Stop iterating and pass to next element.</span>
+        <span class="keyword">if</span> (double(el)==40), <span class="keyword">break</span>; <span class="keyword">end</span>
+
+        <span class="comment">% If 'el' doesn't begin by capital letter, it is not a chemical element.</span>
+        <span class="comment">% Move on to the next character</span>
+        <span class="keyword">if</span> (double(el)&lt;65 &amp;&amp; double(el)&gt;90), <span class="keyword">continue</span>; <span class="keyword">end</span>
+
+        <span class="comment">% Beginning by capital letter, four cases are available:</span>
+        <span class="comment">%Case 1: The element is in the last position of the script like O in H2O</span>
+        <span class="keyword">if</span> (i==length(su))
+            m=1;
+        <span class="keyword">else</span>
+        <span class="comment">%Case 2: The next letter is a capital letter, the element is only a letter, like H in HO</span>
+            el2=su(i+1);
+            <span class="keyword">if</span> (double(el2)&gt;=65 &amp;&amp; double(el2)&lt;=90)
+                m=1;
+        <span class="comment">%Case 3: The next letter is a number, The element has only a capital letter</span>
+        <span class="comment">% but is multiplied by the number that follows, like 2 in H2O</span>
+            <span class="keyword">elseif</span> (double(el2)&gt;=48 &amp;&amp; double(el2)&lt;=57)
+                m=double(el2)-48;
+                <span class="keyword">if</span> (i+1&lt;length(su))
+                    el3=su(i+2);
+                    <span class="comment">%Case 3.2: The next letter is a number, The element has only a</span>
+                    <span class="comment">% capital letter but is multiplied by the number that follows, like 2 in H2O</span>
+                    <span class="keyword">if</span> (double(el3)&gt;=48 &amp;&amp; double(el3)&lt;=57)
+                        m2=double(el3)-48;
+                        m=10*m+m2;
+                    <span class="keyword">end</span>
+                <span class="keyword">end</span>
+        <span class="comment">%Case 4: The next letter is a lowercase letter.</span>
+        <span class="comment">% The element has two letters like Br in Br2</span>
+            <span class="keyword">elseif</span>(double(el2)&gt;=97 &amp;&amp; double(el2)&lt;=122)
+                el=[el, el2];
+                m=1;
+                <span class="comment">%Is this element in the last position of the string?</span>
+                <span class="comment">%If the answer is yes, m=1, otherwise we need to check</span>
+                <span class="comment">%if the next letter is a number of a Capital letter</span>
+                <span class="keyword">if</span> (i+1&lt;length(su))
+                    el3=su(i+2);
+                    <span class="comment">%The next letter is a number, change the multiplier m by this number</span>
+                    <span class="keyword">if</span> (double(el3)&gt;48 &amp;&amp; double(el3)&lt;57)
+                        m=double(el3)-48;
+                        <span class="keyword">if</span> (i+2&lt;length(su))
+                            el4=su(i+3);
+                            <span class="keyword">if</span> (double(el4)&gt;=48 &amp;&amp; double(el4)&lt;=57)
+                                m2=double(el4)-48;
+                                m=10*m+m2;
+                            <span class="keyword">end</span>
+                        <span class="keyword">end</span>
+                    <span class="keyword">end</span>
+                <span class="keyword">end</span>
+            <span class="keyword">end</span>
+        <span class="keyword">end</span>
+        <span class="comment">% Now we have an element and it's quantity. We build the system</span>
+        <span class="comment">% matrix</span>
+        <span class="comment">% Rows are different elements</span>
+        <span class="comment">% Rolls are different species</span>
+
+        <span class="comment">% First of all we search the corresponding row of the element.</span>
+        <span class="keyword">if</span> (double(el(1))&gt;=65 &amp;&amp; double(el(1))&lt;=90)
+            aux={el};
+            trobat=0;
+            <span class="keyword">for</span> f=1:length(elecomp)
+                <span class="keyword">if</span> isequal(aux,elecomp(f))
+                    trobat=1;
+                    <span class="keyword">break</span>
+                <span class="keyword">end</span>
+            <span class="keyword">end</span>
+            <span class="keyword">if</span> (trobat==0)
+                elecomp(f+1)=elecomp(f); <span class="comment">%If the element does not exist in the elecomp, we create it</span>
+                elecomp(f)=aux; <span class="comment">%introducing new element</span>
+            <span class="keyword">end</span>
+
+            <span class="comment">% We build the matrix thanks to (f), the row index</span>
+            A(f,j)=B(f,j)+m; <span class="comment">% The sum allows to build the matrix for species like CNN, where N=2</span>
+            B(f,j)=A(f,j);
+            <span class="comment">% We build the vector thanks to (f), the row index</span>
+            v(f)=c(f)+m*n_o(j); <span class="comment">% The sum allows to build the matrix for species like CNN, where N=2</span>
+            c(f)=v(f);
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+    M=A;
+    b=transpose(v);
+<span class="keyword">end</span>
+
+<span class="keyword">end</span>
+</pre><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2014b</a><br></p></div></body></html>

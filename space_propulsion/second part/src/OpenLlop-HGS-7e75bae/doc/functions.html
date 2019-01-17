@@ -1,0 +1,34 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Functions</title>
+</head>
+
+<body>
+<h1>Functions</h1>
+<p>
+The first thing that is needed to know is that all the code must be at the same folder (or MATLAB path) to work properly. As of MATLAB 2014b, the code can be installed as a custom toolbox, therefore, it can be used at any time. The code is divided in three groups: the one that contains all data from the NASA polynomial, the one with functions that contains references to the data code and the examples that show how the functions work.<br><br>
+BurcatDB.mat is the main database. This file contains two variables: first, one named IndexCell that identifies each single element or mixture with one number, and another named BurcatDB that contains the NASA polynomials for the specific heat and the molar mass.
+</p>
+<h2> External Functions </h2>
+This functions are the heart of the HGS code. They are the ones to be called and used by the user:<br>
+<ul>
+<li> <a href="hgseq.html">hgseq</a>: This function computes the chemical equilibrium of species.</li>
+<li><a href="hgsisentropic.html">hgsisentropic</a>: Computes an isentropic expansion assuming either frozen or shifting flow.</li>
+<li><a href="hgsprop.html">hgsprop</a>: This function computes
+function computes properties for a single element or mixtures whose temperatures range from 200 K to 6000 K.</li>
+<li><a href="hgssingle.html">hgssingle</a>: This function computes the enthalpy, entropy or Gibbs free energy of a single element. The temperature must be set within a range from 200 K to 6000 K.</li>
+<li><a href="hgsTp.html">hgsTp</a>: Computes the adiabatic flame temperature of a reaction (with dissociation).</li>
+</ul>
+<h2>Internal functions</h2>
+Such functions are not intended to be called by the user; instead, they are called by the main functions.
+<ul>
+<li>hgsDB: This function returns the properties of a vector of element id’s according to the burcatDB.</li>
+<li>hgsid: This function identifies each single element in the database with its number designation, which is its position in the database vector.</li>
+<li>hgsmix: This function calculates enthalpy, enthropy and Gibbs free energy (selected by the user) for an input element properties stored in Data using the NASA polynomial method. Input parameters are: Data, temperature (K), pressure (bar) and vector for the number of mols of the species. Output can either be: enthalpy, enthropy or Gibbs free energy depending on the chosen option.</li>
+<li>hgsfzero: A custom solver for the HGS code that finds a zero of a single argument function. It is functionally equivalent to fzero, however, it has proven to work better than fzero.</li>
+<li>hgssolve: This function is a solver selector for hgs code. The main motivation for this code is that in some situations, the performance or even the functionality of hgsTp and hgsisentropic depend on the solver in use. This function is called by hgsT and hsgisentropic and allows the user to select different solvers, including the in-house developed hgsfzero.</li>
+</ul>
+</body>
+</html>

@@ -1,0 +1,36 @@
+<?xml version='1.0' encoding="utf-8"?>
+<toc version="2.0">
+
+    <tocitem target="doc.html">HGS. Chemical Equilibrium Calculation
+        <tocitem target="functions.html" image="HelpIcon.FUNCTION">Functions 
+            <tocitem target="hgssingle.html">hgssingle</tocitem>
+            <tocitem target="hgsprop.html">hgsprop</tocitem>
+            <tocitem target="hgseq.html">hgseq</tocitem>
+            <tocitem target="hgsTp.html">hgsTp</tocitem>
+            <tocitem target="hgsisentropic.html">hgsisentropic</tocitem>
+        </tocitem>
+        <tocitem target="hgsgraphic.html"
+                 image="HelpIcon.GETTING_STARTED">HGS Graphic
+        </tocitem>
+        <tocitem target="examples.html" 
+                 image="HelpIcon.EXAMPLES">Examples
+                     <tocitem target="../HGS/html/Ex00_properties.html">Ex00 Properties</tocitem>
+                     <tocitem target="../HGS/html/Ex01_flame_temperature_no_dis.html">Ex01 Flame temperature (no dissociation)</tocitem>
+                     <tocitem target="../HGS/html/Ex02_H2O2.html">Ex02 H2O2</tocitem>
+                     <tocitem target="../HGS/html/Ex02b_H2O2_liquid_V2.html">Ex02b H2O2 liquid</tocitem>
+                     <tocitem target="../HGS/html/Ex03_eq_CO2.html">Ex03 Equilibrium CO2</tocitem>
+                     <tocitem target="../HGS/html/Ex03b_eq_CO2.html">Ex03b Equilibrium CO2</tocitem>
+                     <tocitem target="../HGS/html/Ex04_equilibrium_H2_O2.html">Ex04 Equilibrium H2 O2</tocitem>
+                     <tocitem target="../HGS/html/Ex04b_adiabatic_flame_T.html">Ex04b Adiabatic flame T</tocitem>
+                     <tocitem target="../HGS/html/Ex05_H2_O2_reaction_enthalpy_change.html">Ex05 H2 O2 reaction enthalpy change</tocitem>
+                     <tocitem target="../HGS/html/Ex05b_H2_O2_reaction_enthalpy_change.html">Ex05b H2 O2 reaction enthalpy change</tocitem>
+                     <tocitem target="../HGS/html/Ex05c_C3H8.html">Ex05c C3H8</tocitem>
+                     <tocitem target="../HGS/html/Ex06_LOX_combustion.html">Ex06 LOX combustion</tocitem>
+                     <tocitem target="../HGS/html/Ex07_isentropic_comparison_rpa.html">Ex07 RPA comparison</tocitem>
+                     <tocitem target="../HGS/html/Ex08_Isp_vs_OF_ratio.html">Ex08 Isp vs OF ratio</tocitem>
+                     <tocitem target="../HGS/html/Ex09_RP1.html">Ex09 RP1</tocitem>
+                     <tocitem target="../HGS/html/Ex10_solvers.html">Ex10 solvers</tocitem>
+        </tocitem>
+    </tocitem>
+
+</toc>
