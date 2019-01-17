@@ -63,13 +63,13 @@ def gauss_seidel(w, f, opt):
 			print("Iteration %i: maximum error: %2.4e" %(iter, error))
 	return f
 
-def obs_circulation(w, f):
-	circ =
-	for i in range(1, w.ny-1):
-		for j in range(1, w.nx-1):
-			if w.solid[i,j]:
-				# Sum up the circulation value
-				# For this I have to take into account each face velocity
-				# and also the sign criteria, and multiply each one by
-				# the face length.
-				# Then just sum up every point within the solid.
+#def obs_circulation(w, f):
+#	# circ =
+#	for i in range(1, w.ny-1):
+#		for j in range(1, w.nx-1):
+#			if w.solid[i,j]:
+#				# Sum up the circulation value
+#				# For this I have to take into account each face velocity
+#				# and also the sign criteria, and multiply each one by
+#				# the face length.
+#				# Then just sum up every point within the solid.
