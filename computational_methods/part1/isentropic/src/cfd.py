@@ -36,17 +36,17 @@ def gauss_seidel(w, f, opt):
 		iter += 1
 		for i in range(1, w.ny-1): # rows
 			for j in range(1, w.nx-1): # columns
-				f.phi_1[i,j] = tools.calc_phi(f.phi, f.rho, c.rho0, i, j, w)
+				f = tools.calc_phi(f, c, i, j, w)
 		# Last column boundary condition (normal outflow)
 		f.phi_1[:,w.nx-1] = f.phi[:,w.nx-2]
 
 		# Meassure error
 		error = np.max(np.abs(f.phi_1 - f.phi))
+		print(error)
 
 		for i in range(1, w.ny-1): # rows
 			for j in range (1, w.nx-1): # columns
-				f.Vx[i,j], f.Vy[i,j] = tools.calc_vel(f.phi_1, f.rho, c.rho0, i, j, w, f.Vin)
-				f.V[i,j] = np.sqrt(f.Vx[i,j]**2 + f.Vx[i,j]**2)
+				f = tools.calc_vel(f, c, i, j, w)
 
 				if opt.compressible:
 					# From energy conservation (calculated temperature)
