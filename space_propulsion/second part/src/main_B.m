@@ -10,15 +10,10 @@
 % the properties of the gases during the combustion, and comparing it with
 % the theoretical Thrust given by the manufacturer.
 
-%% Manufacturer specifications
-
-Isp = 220;			% Nominal specific impulse (s)
-m_tot = 0.29;		% Total mass (kg)
-deltah_vap = 44.5;	% Vaporization heat of hydrazine (kJ/mol)
-
-
-
 %% Code
+
+clear all
+clc
 
 % Initial guess for decmposition factor
 x0 = 0.5;
