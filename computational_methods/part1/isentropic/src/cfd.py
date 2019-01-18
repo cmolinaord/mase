@@ -1,6 +1,7 @@
 import numpy as np
 import const as c
 import tools
+from copy import deepcopy
 
 def boundary(w, f, o):
 	# Initialization of boundary condition for Phi
@@ -36,7 +37,7 @@ def gauss_seidel(w, f, opt):
 		iter += 1
 		for i in range(1, w.ny-1): # rows
 			for j in range(1, w.nx-1): # columns
-				f = tools.calc_phi(f, c, i, j, w)
+				f = tools.calc_phi(f, w, c, i, j, w)
 		# Last column boundary condition (normal outflow)
 		f.phi_1[:,w.nx-1] = f.phi[:,w.nx-2]
 
@@ -62,13 +63,55 @@ def gauss_seidel(w, f, opt):
 			print("Iteration %i: maximum error: %2.4e" %(iter, error))
 	return f
 
-def obs_circulation(f, w):
-	circulation = 0
-	for i in range(1, w.ny-1):
-		for j in range(1, w.nx-1):
-			if w.solid[i,j]:
-				# Sum up the circulation value
-				# border velocities * lenght (clockwise sign criteria)
-				c = f.vn*w.dx - f.ve*w.dy - f.vs*w.dx + f.vw*w.dy
-				circulation = circ + c
-	return circulation
+def solid_circulation(f, w):
+	circ = 0
+	c = 0
+	# Sum up the circulation value
+	# border velocities * lenght (clockwise sign criteria)
+	c = f.vn*w.dx - f.ve*w.dy - f.vs*w.dx + f.vw*w.dy
+	circ = np.sum(c*w.solid)
+	return circ
+
+def circulation_computation(obstacle, options):
+	# This function computes the whole domain, with a reduced
+	# resolution, and calculates the circulation around the obstacle
+	# for different test phi_solid inside the obstacle
+
+	N = 4 # Number of tries
+	rX = 0.8 # Reduction of mesh resolution
+	pX = 0.6 # Reduction in precission
+	iX = 0.6 # Reduction in iterations
+
+	# Create local copy of this objects, to not affect global ones
+	obs = deepcopy(obstacle)
+	opt = deepcopy(options)
+
+	opt.nx 		= int(opt.nx * rX)
+	opt.ny 		= int(opt.ny * rX)
+	opt.precission 	= opt.precission / pX
+	opt.itermax 	= int(opt.itermax * iX)
+	opt.verbose 	= False
+
+	# Phi values to try (from 0 to Vin*dx*ny)
+	phi_try = np.linspace(0, opt.Vin*opt.L/opt.nx*opt.ny, N)
+	circ = np.zeros([N])
+
+	# Common world
+	w_aux = tools.world(opt)
+	f = tools.fluid(w_aux, c, opt)
+	w_aux, f = boundary(w_aux, f, obs)
+	print("Try   : (phi,circ)")
+
+	for i in range(N):
+		w_aux.phi_solid = phi_try[i]
+		f = gauss_seidel(w_aux, f, opt)
+		circ[i] = solid_circulation(f, w_aux)
+		print("Try %i: (%2.2f,%2.2f)" % (i, phi_try[i], circ[i]))
+
+	m = (circ[-1] - circ[0])/(phi_try[-1] - phi_try[0])
+	n = circ[0] - m*phi_try[0]
+
+	print("Wanted circ = %1.2f" % obs.circ)
+	phi_solid = (obs.circ - n) / m
+	print("Final phi_solid = %1.2f\n" % phi_solid)
+	return phi_solid

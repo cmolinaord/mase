@@ -23,19 +23,16 @@ import plot
 import const as c
 import cli
 
-# Input parameters
-nx = 60
-ny = 30
-
 # Load default options
 opt = tools.options()
 
+# User input
 args = sys.argv
 if len(args) > 1:
 	opt.itermax = int(args[1])
 if len(args) > 3:
-	nx = int(args[2])
-	ny = int(args[3])
+	opt.nx = int(args[2])
+	opt.ny = int(args[3])
 if len(args) > 4:
 	opt.precission = float(args[4])
 elif len(args) > 5:
@@ -44,24 +41,30 @@ elif len(args) > 5:
 	exit()
 
 # Domain parameters (m)
-L = 20
-H = 10
+L = opt.L
+H = opt.H
 # Solid objects
 center = [L/2, H/2]
 radius = min(L,H)/6
-obs = tools.obstacle(center, radius)
+circulation_wanted = 25
+obs = tools.obstacle(center, radius, circulation_wanted)
 
 tic = time.perf_counter()
 
-# Inlet face
-Vin = 3
-
+# Inlet face velocity
+opt.Vin = 3
 # Creation of the World
-w = tools.world(L, H, nx, ny)
+w = tools.world(opt)
+print(w.phi_solid)
+# Computation of the circulation
+print(opt.itermax)
+w.phi_solid = cfd.circulation_computation(obs, opt)
+print(w.phi_solid)
+print(opt.itermax)
 # Print input parameters
 cli.input(w, opt)
 # Creation of the fluid
-f = tools.fluid(w, c.p0, c.T0, Vin)
+f = tools.fluid(w, c, opt)
 # Boundary conditions computation
 w, f = cfd.boundary(w, f, obs)
 # Computation of the fluid dynamic
