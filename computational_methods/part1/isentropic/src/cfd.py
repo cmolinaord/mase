@@ -3,7 +3,7 @@ import const as c
 from tools import *
 from copy import deepcopy
 
-def boundary(w, f, o):
+def boundary(w, f, obs):
 	# Initialization of boundary condition for Phi
 	# Inlet (West border)
 	for i in range(1, w.ny):
@@ -22,8 +22,8 @@ def boundary(w, f, o):
 
 	for i in range(1,w.ny-1):
 		for j in range(1,w.nx-1):
-			d = np.sqrt((w.x[j] - o.c[0])**2 + (w.y[i] - o.c[1])**2)
-			if d < o.r:
+			d = np.sqrt((w.x[j] - obs.c[0])**2 + (w.y[i] - obs.c[1])**2)
+			if d < obs.r:
 				w.solid[i,j] = True
 
 	return w, f
