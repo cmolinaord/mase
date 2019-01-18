@@ -1,3 +1,4 @@
+"""
 # Isentropic compressible fluid dynamics simulation
 # Computational Engineering 2018 - Computational Fluid Dynamics
 # MASE - Master's degree in Space and Aeronautical Engineering
@@ -6,14 +7,15 @@
 # Definition of the Domain
 #      ________________________
 # ny-1| ->                     |
-#    ·| ->    N                |
-#    ·| ->  W P E              |
+#    .| ->    N                |
+#    .| ->  W P E              |
 #    3| ->    S                | H
 #    2| ->                     |
 #    1| ->                     |
 #    0| ->_____________________|
-#      0 1 2 3     · · ·   nx-1
+#      0 1 2 3     . . .   nx-1
 #                 L
+"""
 
 import time
 import sys
@@ -64,10 +66,12 @@ f = tools.fluid(w, c, opt)
 # Boundary conditions computation
 w, f = cfd.boundary(w, f, obs)
 # Computation of the fluid dynamic
-f = cfd.gauss_seidel(w, f, opt)
+f, res = cfd.gauss_seidel(w, f, opt)
 
 toc = time.perf_counter() - tic
 print("Elapsed time: %1.2fs" % toc)
+print("Number of iterations done: %i" % res.iters)
+print("Max error archieved: %1.5E" % res.error)
 
 plot.velocity(w, f, obs)
 plot.density(w, f, obs)

@@ -53,6 +53,10 @@ class options(object):
 	H = 10
 	Vin = 3
 
+class results(object):
+	iters = []
+	error = []
+
 def density(p, T, R):
 	# Calculate density of the gas given p (pressure), T (temperature) and
 	# the specific gas constant R

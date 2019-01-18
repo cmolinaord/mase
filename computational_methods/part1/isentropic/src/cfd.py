@@ -35,6 +35,7 @@ def gauss_seidel(w, f, opt):
 
 	while error > opt.precission and iter < opt.itermax:
 		iter += 1
+		# Phi calc
 		for i in range(1, w.ny-1): # rows
 			for j in range(1, w.nx-1): # columns
 				f = tools.calc_phi(f, w, c, i, j, w)
@@ -43,7 +44,7 @@ def gauss_seidel(w, f, opt):
 
 		# Meassure error
 		error = np.max(np.abs(f.phi_1 - f.phi))
-
+		# Velocity calc
 		for i in range(1, w.ny-1): # rows
 			for j in range (1, w.nx-1): # columns
 				f = tools.calc_vel(f, c, i, j, w)
@@ -61,7 +62,10 @@ def gauss_seidel(w, f, opt):
 		f.phi[:,:] = f.phi_1[:,:]
 		if iter % 10 == 0 and opt.verbose == True:
 			print("Iteration %i: maximum error: %2.4e" %(iter, error))
-	return f
+	res = tools.results()
+	res.iters = iter
+	res.error = error
+	return f, res
 
 def solid_circulation(f, w):
 	circ = 0
@@ -111,9 +115,9 @@ def circulation_computation(obstacle, options):
 
 	for i in range(N):
 		w_aux.phi_solid = phi_try[i]
-		f = gauss_seidel(w_aux, f, opt)
+		f, res = gauss_seidel(w_aux, f, opt)
 		circ[i] = solid_circulation(f, w_aux)
-		print(".")
+		print(". iters: %i" % res.iters)
 
 	m = (circ[-1] - circ[0])/(phi_try[-1] - phi_try[0])
 	n = circ[0] - m*phi_try[0]
