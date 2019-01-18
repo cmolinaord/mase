@@ -55,12 +55,8 @@ tic = time.perf_counter()
 opt.Vin = 3
 # Creation of the World
 w = tools.world(opt)
-print(w.phi_solid)
 # Computation of the circulation
-print(opt.itermax)
 w.phi_solid = cfd.circulation_computation(obs, opt)
-print(w.phi_solid)
-print(opt.itermax)
 # Print input parameters
 cli.input(w, opt)
 # Creation of the fluid

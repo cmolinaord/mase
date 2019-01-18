@@ -86,6 +86,14 @@ def circulation_computation(obstacle, options):
 	obs = deepcopy(obstacle)
 	opt = deepcopy(options)
 
+	print("Starting circulation computation with:")
+	print("    %i tries of:" % N)
+	print("    %1.1f reduced mesh resolution" % rX)
+	print("    %1.1f reduced precision" % pX)
+	print("    %1.1f reduced number of iterations" % iX)
+	print(" ")
+	print("Circulation wanted: %1.2f" % obs.circ)
+
 	opt.nx 		= int(opt.nx * rX)
 	opt.ny 		= int(opt.ny * rX)
 	opt.precission 	= opt.precission / pX
@@ -100,18 +108,16 @@ def circulation_computation(obstacle, options):
 	w_aux = tools.world(opt)
 	f = tools.fluid(w_aux, c, opt)
 	w_aux, f = boundary(w_aux, f, obs)
-	print("Try   : (phi,circ)")
 
 	for i in range(N):
 		w_aux.phi_solid = phi_try[i]
 		f = gauss_seidel(w_aux, f, opt)
 		circ[i] = solid_circulation(f, w_aux)
-		print("Try %i: (%2.2f,%2.2f)" % (i, phi_try[i], circ[i]))
+		print(".")
 
 	m = (circ[-1] - circ[0])/(phi_try[-1] - phi_try[0])
 	n = circ[0] - m*phi_try[0]
 
-	print("Wanted circ = %1.2f" % obs.circ)
 	phi_solid = (obs.circ - n) / m
-	print("Final phi_solid = %1.2f\n" % phi_solid)
+	print("Computed phi_solid = %1.2f\n" % phi_solid)
 	return phi_solid
