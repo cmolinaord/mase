@@ -15,6 +15,9 @@
 #    0| ->_____________________|
 #      0 1 2 3     . . .   nx-1
 #                 L
+
+python main.py <itermax> <nx> <ny> <precission>
+
 """
 
 import time

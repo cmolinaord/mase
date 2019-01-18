@@ -61,7 +61,7 @@ def gauss_seidel(w, f, opt):
 
 		f.phi[:,:] = f.phi_1[:,:]
 		if iter % 10 == 0 and opt.verbose == True:
-			print("Iteration %i: maximum error: %2.4e" %(iter, error))
+			print("  Iteration %i: maximum error: %2.4e" %(iter, error))
 	res = tools.results()
 	res.iters = iter
 	res.error = error
@@ -90,19 +90,20 @@ def circulation_computation(obstacle, options):
 	obs = deepcopy(obstacle)
 	opt = deepcopy(options)
 
-	print("Starting circulation computation with:")
-	print("    %i tries of:" % N)
-	print("    %1.1f reduced mesh resolution" % rX)
-	print("    %1.1f reduced precision" % pX)
-	print("    %1.1f reduced number of iterations" % iX)
-	print(" ")
-	print("Circulation wanted: %1.2f" % obs.circ)
-
 	opt.nx 		= int(opt.nx * rX)
 	opt.ny 		= int(opt.ny * rX)
 	opt.precission 	= opt.precission / pX
 	opt.itermax 	= int(opt.itermax * iX)
-	opt.verbose 	= False
+	if opt.nx*opt.ny*opt.itermax < 100000:
+		opt.verbose 	= False
+
+	print("Starting circulation computation with:")
+	print("    %i tries of:" % N)
+	print("    %1.1f reduced mesh resolution: (%i,%i)" % (rX,opt.nx,opt.ny))
+	print("    %1.1f reduced precision: %1.2e" % (pX,opt.precission))
+	print("    %1.1f reduced number of iterations: %i" % (iX,opt.itermax))
+	print(" ")
+	print("Circulation wanted: %1.2f" % obs.circ)
 
 	# Phi values to try (from 0 to Vin*dx*ny)
 	phi_try = np.linspace(0, opt.Vin*opt.L/opt.nx*opt.ny, N)
@@ -117,7 +118,7 @@ def circulation_computation(obstacle, options):
 		w_aux.phi_solid = phi_try[i]
 		f, res = gauss_seidel(w_aux, f, opt)
 		circ[i] = solid_circulation(f, w_aux)
-		print(". iters: %i" % res.iters)
+		print("Try(%i) iters: %i" % (i,res.iters))
 
 	m = (circ[-1] - circ[0])/(phi_try[-1] - phi_try[0])
 	n = circ[0] - m*phi_try[0]
