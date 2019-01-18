@@ -1,6 +1,6 @@
 import numpy as np
 import const as c
-import tools
+from tools import *
 from copy import deepcopy
 
 def boundary(w, f, o):
@@ -38,7 +38,7 @@ def gauss_seidel(w, f, opt):
 		# Phi calc
 		for i in range(1, w.ny-1): # rows
 			for j in range(1, w.nx-1): # columns
-				f = tools.calc_phi(f, w, c, i, j, w)
+				f = calc_phi(f, w, c, i, j, w)
 		# Last column boundary condition (normal outflow)
 		f.phi_1[:,w.nx-1] = f.phi[:,w.nx-2]
 
@@ -47,7 +47,7 @@ def gauss_seidel(w, f, opt):
 		# Velocity calc
 		for i in range(1, w.ny-1): # rows
 			for j in range (1, w.nx-1): # columns
-				f = tools.calc_vel(f, c, i, j, w)
+				f = calc_vel(f, c, i, j, w)
 
 				if opt.compressible:
 					# From energy conservation (calculated temperature)
@@ -57,12 +57,12 @@ def gauss_seidel(w, f, opt):
 
 		# Compute new pressure (if compressible)
 		if opt.compressible:
-			f.rho = tools.density(f.p, f.T, c.R)
+			f.rho = density(f.p, f.T, c.R)
 
 		f.phi[:,:] = f.phi_1[:,:]
 		if iter % 10 == 0 and opt.verbose == True:
 			print("  Iteration %i: maximum error: %2.4e" %(iter, error))
-	res = tools.results()
+	res = results()
 	res.iters = iter
 	res.error = error
 	return f, res
@@ -110,8 +110,8 @@ def circulation_computation(obstacle, options):
 	circ = np.zeros([N])
 
 	# Common world
-	w_aux = tools.world(opt)
-	f = tools.fluid(w_aux, c, opt)
+	w_aux = world(opt)
+	f = fluid(w_aux, c, opt)
 	w_aux, f = boundary(w_aux, f, obs)
 
 	for i in range(N):
