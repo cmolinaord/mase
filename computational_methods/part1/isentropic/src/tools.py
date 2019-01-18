@@ -13,28 +13,28 @@ class world(object):
 		self.y = np.linspace(0, opt.H, opt.ny)
 		self.xv, self.yv = np.meshgrid(self.x, self.y)
 		# Creation of solid
-		self.solid = self.create_matrix(0)
+		self.solid = self.new_matrix(0)
 		self.phi_solid = 0.5
 
-	def create_matrix(self, init):
+	def new_matrix(self, init):
 		A = np.zeros([self.ny, self.nx]) + init
 		return A
 
 class fluid(object):
 	def __init__(self, w, c, opt):
-		self.phi 	= w.create_matrix(0)
-		self.phi_1 	= w.create_matrix(0)
-		self.p 	= w.create_matrix(c.p0)
-		self.T	= w.create_matrix(c.T0)
-		self.rho	= w.create_matrix(density(c.p0, c.T0, c.R))
+		self.phi 	= w.new_matrix(0)
+		self.phi_1 	= w.new_matrix(0)
+		self.p 	= w.new_matrix(c.p0)
+		self.T	= w.new_matrix(c.T0)
+		self.rho	= w.new_matrix(density(c.p0, c.T0, c.R))
 		self.Vin	= opt.Vin
-		self.vn	= w.create_matrix(0)
-		self.vs	= w.create_matrix(0)
-		self.vw	= w.create_matrix(0)
-		self.ve	= w.create_matrix(0)
-		self.Vx	= w.create_matrix(opt.Vin)
-		self.Vy	= w.create_matrix(0)
-		self.V	= w.create_matrix(0)
+		self.vn	= w.new_matrix(0)
+		self.vs	= w.new_matrix(0)
+		self.vw	= w.new_matrix(0)
+		self.ve	= w.new_matrix(0)
+		self.Vx	= w.new_matrix(opt.Vin)
+		self.Vy	= w.new_matrix(0)
+		self.V	= w.new_matrix(0)
 
 class obstacle(object):
 	def __init__(self, c, r, circ):
