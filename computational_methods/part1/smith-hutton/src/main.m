@@ -1,3 +1,9 @@
+% Computational Fluid Dynamics
+% Convection-Diffusion Equation (Smidth-Hutton)
+% MASE (Master's Degree in Space and Aeronautical Engineering)
+% Carlos Molina
+% January 2019
+
 clc
 clear
 close all
@@ -124,6 +130,8 @@ for g = 1:length(ratiorhoGamma)
 	shading flat;
 	colormap jet;
 	colorbar;
+	axis('equal')
+	
 	if problem == 'DF'
 		figure()
 		contour(Phi_new(1:w.nx,1:w.ny));
@@ -148,7 +156,7 @@ for g = 1:length(ratiorhoGamma)
 		grid
 		grid minor
 	end
-	
+
 	% Time computation
 	time_ = toc;
 	if g == 1
@@ -156,11 +164,10 @@ for g = 1:length(ratiorhoGamma)
 	else
 		res.time(g) = toc-res.time(g-1);
 	end
-	
+
 	% Results saving
 	res.error(g)	= error;
 	res.iter(g)		= iter;
 	fprintf('%1.2f s\t', res.time(g))
 	fprintf('i=%i\t(%3.0f Hz)\t%1.1e\n', iter, iter/res.time(g), error)
 end
-
