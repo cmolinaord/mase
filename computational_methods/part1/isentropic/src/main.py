@@ -51,13 +51,11 @@ H = opt.H
 # Solid objects
 center = [L/2, H/2]
 radius = min(L,H)/6
-circulation_wanted = 25
+circulation_wanted = 90
 obs = tools.obstacle(center, radius, circulation_wanted)
 
 tic = time.perf_counter()
 
-# Inlet face velocity
-opt.Vin = 3
 # Creation of the World
 w = tools.world(opt)
 # Computation of the circulation

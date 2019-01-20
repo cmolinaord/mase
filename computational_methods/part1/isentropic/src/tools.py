@@ -34,7 +34,7 @@ class fluid(object):
 		self.ve	= w.new_matrix(0)
 		self.Vx	= w.new_matrix(opt.Vin)
 		self.Vy	= w.new_matrix(0)
-		self.V	= w.new_matrix(0)
+		self.V	= w.new_matrix(opt.Vin)
 
 class obstacle(object):
 	def __init__(self, c, r, circ):
@@ -45,13 +45,22 @@ class obstacle(object):
 class options(object):
 	precission = 1e-3
 	itermax = 200
-	compressible = True
 	verbose = True
 	nx = 60
 	ny = 30
 	L = 20
 	H = 10
-	Vin = 3
+	Vin = 20
+	def __init__(self):
+		self.Mach = self.Mach(self.Vin)
+		if self.Mach < 0.02:
+			self.compressible = False
+		else:
+			self.compressible = True
+
+	def Mach(self, Vin):
+		Mach = Vin / np.sqrt(c.gamma*c.R*c.T0)
+		return Mach
 
 class results(object):
 	iters = []
