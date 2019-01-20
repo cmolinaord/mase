@@ -1,64 +1,60 @@
-function [AP, AN, AS, AW, AE, bP]=BoundaryNodesSH(AP,AN,AS,AW,AE,bP,posX,n_x,n_y,alpha);
+function [a, bP] = BoundaryNodesSH(a,bP, posX, w, alpha)
 
+	for j = 1:w.ny % vertical sides cavity
+		a.P(j,1) = 1;
+		bP(j,1) = 1-tanh(alpha);
+		a.P(j,w.nx) = 1;
+		bP(j,w.nx) = 1-tanh(alpha);
+	end
 
-for j=1:n_y %vertical sides cavity
-    AP(j,1)=1;
-    bP(j,1)=1-tanh(alpha);
-    AP(j,n_x)=1;
-    bP(j,n_x)=1-tanh(alpha);
+	for i = 1:w.nx % Top side cavity
+		a.P(w.ny,i) = 1;
+		bP(w.ny,i) = 1-tanh(alpha);
+	end
+
+	for i = 1:(w.nx/2)  % Inlet
+		a.P(1,i) = 1;
+		a.N(1,i) = 0;
+		a.S(1,i) = 0;
+		a.W(1,i) = 0;
+		a.E(1,i) = 0;
+		bP(1,i) = 1+tanh(alpha*(2*posX(i)+1));
+	end
+
+	for i = (w.nx/2):w.nx  % Outlet
+		a.P(1,i) = 1;
+		a.N(1,i) = 1;
+		a.S(1,i) = 0;
+		a.W(1,i) = 0;
+		a.E(1,i) = 0;
+		bP(1,i) = 0;
+	end
+
+	% Up-left corner. No north nor west.
+	a.P(w.ny,1) = 1;
+	a.N(w.ny,1) = 0;
+	a.S(w.ny,1) = 0.5;
+	a.W(w.ny,1) = 0;
+	a.E(w.ny,1) = 0.5;
+
+	% bottom-left corner. No south nor west.
+	a.P(1,1) = 1;
+	a.N(1,1) = 0.5;
+	a.S(1,1) = 0;
+	a.W(1,1) = 0;
+	a.E(1,1) = 0.5;
+
+	% up-right corner. No north nor east.
+	a.P(w.ny,w.nx) = 1;
+	a.N(w.ny,w.nx) = 0;
+	a.S(w.ny,w.nx) = 0.5;
+	a.W(w.ny,w.nx) = 0.5;
+	a.E(w.ny,w.nx) = 0;
+
+	% bottom-right corner. No south nor east.
+	a.P(1,w.nx) = 1;
+	a.N(1,w.nx) = 0.5;
+	a.S(1,w.nx) = 0;
+	a.W(1,w.nx) = 0.5;
+	a.E(1,w.nx) = 0;
 end
-
-for i=1:n_x %Top side cavity
-    AP(n_y,i)=1;
-    bP(n_y,i)=1-tanh(alpha);
-end
-
-
-for i=1:(n_x/2)  %Inlet
-           AP(1,i)=1;
-           AN(1,i)=0;
-           AS(1,i)=0;
-           AW(1,i)=0;
-           AE(1,i)=0;
-           bP(1,i)=1+tanh(alpha*(2*posX(i)+1));
-end
-
-for i=(n_x/2):n_x  %Outlet
-           AP(1,i)=1;
-           AN(1,i)=1;
-           AS(1,i)=0;
-           AW(1,i)=0;
-           AE(1,i)=0;
-           bP(1,i)=0;
-end
-
-
-%Up-left corner. No north nor west.
-AP(n_y,1)=1;
-AN(n_y,1)=0;
-AS(n_y,1)=0.5;
-AW(n_y,1)=0;
-AE(n_y,1)=0.5;
-       
-%bottom-left corner. No south nor west.
-AP(1,1)=1;
-AN(1,1)=0.5;
-AS(1,1)=0;
-AW(1,1)=0;
-AE(1,1)=0.5;
-       
-%up-right corner. No north nor east.
-AP(n_y,n_x)=1;
-AN(n_y,n_x)=0;
-AS(n_y,n_x)=0.5;
-AW(n_y,n_x)=0.5;
-AE(n_y,n_x)=0;
-       
-%bottom-right corner. No south nor east.
-AP(1,n_x)=1;
-AN(1,n_x)=0.5;
-AS(1,n_x)=0;
-AW(1,n_x)=0.5;
-AE(1,n_x)=0;
-
-return

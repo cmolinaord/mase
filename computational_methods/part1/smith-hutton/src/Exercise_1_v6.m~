@@ -9,11 +9,11 @@ rho = 1;
 V_0 = 100; %Not included inside the function so it can be easily varied for tests
 beta = 1; % 0 for explicit, 1 for implicit, 0.5 for Crank-Nicholson
 ratiorhoGamma = [10,1e3,1e6]; % Rho/Gamma
-n = 60; % Number of nodes (in x direction)
+n = 20; % Number of nodes (in x direction)
 t_limit = 100;
 timestep = 0.001;
 
-N_prog = 40; % Number of points for the progress bar
+N_prog = 25; % Number of points for the progress bar
 
 iter_stop = 1e4;
 delta_conv = 1e-5;
@@ -38,9 +38,9 @@ res.iter = zeros(1,length(ratiorhoGamma));
 res.error = zeros(1,length(ratiorhoGamma));
 
 % Creating title results line
-fprintf('Step\tRho/Gamma\tProgress bar')
+fprintf('%Step\tRho/Gamma\tProgress bar', length(ratiorhoGamma))
 for k = 1:3+N_prog-12; fprintf(' '); end
-fprintf('Time\tIters\tFreq\t\terr\n')
+fprintf('Time\tIters\tFreq\terr\n')
 
 for g = 1:length(ratiorhoGamma)
 	fprintf('%2i\t%1.1e\t\t[', g, ratiorhoGamma(g))
@@ -161,6 +161,6 @@ for g = 1:length(ratiorhoGamma)
 	res.error(g)	= error;
 	res.iter(g)		= iter;
 	fprintf('%1.2f s\t', res.time(g))
-	fprintf('i=%i\t(%3.0f Hz)\t%1.1e\n', iter, iter/res.time(g), error)
+	fprintf('i=%i (%3.0f Hz)\t%1.1e\n', iter, iter/res.time(g), error)
 end
 
