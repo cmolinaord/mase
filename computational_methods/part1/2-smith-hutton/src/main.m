@@ -8,14 +8,14 @@ clc
 clear
 close all
 
-problem = 'SH';  %SH for Smith-Hutton, DF for diagonal flow
-method = 'UDS';  %UDS, CDS
+problem = 'DF';  %SH for Smith-Hutton, DF for diagonal flow
+method = 'CDS';  %UDS, CDS
 
 rho = 1;
 V_0 = 100; %Not included inside the function so it can be easily varied for tests
-beta = 1; % 0 for explicit, 1 for implicit, 0.5 for Crank-Nicholson
+beta = 0.5; % 0 for explicit, 1 for implicit, 0.5 for Crank-Nicholson
 ratiorhoGamma = [10,1e3,1e6]; % Rho/Gamma
-n = 60; % Number of nodes (in x direction)
+n = 50; % Number of nodes (in x direction)
 t_limit = 100;
 timestep = 0.001;
 
@@ -44,12 +44,12 @@ res.iter = zeros(1,length(ratiorhoGamma));
 res.error = zeros(1,length(ratiorhoGamma));
 
 % Creating title results line
-fprintf('Step\tRho/Gamma\tProgress bar')
+fprintf('Prob\tMthd\tStep\tRho/Gamma\tProgress bar')
 for k = 1:3+N_prog-12; fprintf(' '); end
-fprintf('Time\tIters\tFreq\t\terr\n')
+fprintf('\tTime\tIters\tFreq\terr\n')
 
 for g = 1:length(ratiorhoGamma)
-	fprintf('%2i\t%1.1e\t\t[', g, ratiorhoGamma(g))
+	fprintf('%2s\t%3s\t%2i\t%1.1e\t\t[', problem, method, g, ratiorhoGamma(g))
 	rhoGamma = ratiorhoGamma(g);
 
 	%% Mesh
@@ -118,7 +118,7 @@ for g = 1:length(ratiorhoGamma)
 	for k = 1:N_prog-floor(round(iter/iter_stop*N_prog,1))
 	fprintf('_')
 	end
-	fprintf('] ')
+	fprintf(']\t')
 
 	%%Post-Process
 
@@ -150,6 +150,7 @@ for g = 1:length(ratiorhoGamma)
 
 		figure()
 		plot(num_sol(:,1),num_sol(:,g+1),'ok',X_outlet,Phi_outlet,'b')
+		title(strcat('Control volumes = ', int2str((w.nx-2)*(w.ny-2)),', \rho/\Gamma = ', num2str(rhoGamma,'%.2e')))
 		xlabel('x')
 		ylabel('\phi')
 		legend('Exact Num. Solution',method)
@@ -168,6 +169,6 @@ for g = 1:length(ratiorhoGamma)
 	% Results saving
 	res.error(g)	= error;
 	res.iter(g)		= iter;
-	fprintf('%1.2f s\t', res.time(g))
-	fprintf('i=%i\t(%3.0f Hz)\t%1.1e\n', iter, iter/res.time(g), error)
+	fprintf('%1.2f\t', res.time(g))
+	fprintf('%i\t%3.0f\t%1.1e\n', iter, iter/res.time(g), error)
 end
