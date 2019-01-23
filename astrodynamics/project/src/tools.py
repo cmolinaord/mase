@@ -18,10 +18,13 @@ def Earth_to_Jupiter(delta_v):
 
 	Earth_to_Jupiter(dv):
 
-	    dv is given with velocity units
+	    'dv' is given with velocity units (u.m/u.s)
 
 	    Returns:
-	        maneuver, time_of_next_window, period_between windows
+	        ss_transfer = trasfer orbit object
+		  t = time to the first next launch window
+		  T = period between possible launch windows
+		  t_transfer = time of transfer from launch to Jupiter arrival
 	"""
 	dv = delta_v * v_Earth_dir
 
@@ -48,6 +51,7 @@ def Earth_to_Jupiter(delta_v):
 	# Time between windows
 	T = (2*np.pi*u.rad) / (ang_vel_Earth - ang_vel_Jupiter)
 
+	# If time to the windows is negative (in the past), we should wait until next window
 	while t < 0:
 		t = t + T
 
