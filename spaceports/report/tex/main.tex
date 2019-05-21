@@ -2,14 +2,18 @@
 \usepackage{tex/style}
 
 \begin{document}
+	\pagenumbering{Roman}
 	\input{tex/c0_cover_page}
 	\tableofcontents
-	%\listoffigures
+	\newpage
+	\listoffigures
 	\newpage
 	\pagenumbering{arabic}
-	\input{tex/c1_intro}
-	\input{tex/c2_atmospheric}
-	\input{tex/c3_acoustic}
+	\input{tex/c1_intro} 		\newpage
+	\input{tex/c2_atmospheric}	\newpage
+	\input{tex/c3_acoustic}		\newpage
+	\clearpage
+	\input{tex/c4_conclusions}	\newpage
 	\clearpage
 	\input{tex/bibliography}
 \end{document}
