@@ -19,49 +19,50 @@ import matplotlib.pyplot as plt
 from astropy import time
 from astropy import units as u
 from poliastro.util import norm
-from poliastro.bodies import Earth, Jupiter, Sun
+from poliastro.bodies import Earth, Jupiter, Sun, Mars
 from poliastro.twobody import Orbit
 from poliastro.plotting import OrbitPlotter, plot
 from poliastro.maneuver import Maneuver
-from common import *
-from tools import Earth_to_Jupiter
+from tools import Tangent_burn
 
 plt.style.use("seaborn")  # Recommended
 
-# Minimum Delta-V to reach Jupiter with Hohmann transfer
-hoh = Maneuver.hohmann(ss_Earth, R_J)
-dv_min = hoh[0][1]
+A = Earth
+B = Mars
 
-# DeltaV to obtain Solar escape velocity
-# (considering tangent burn)
-escape_v = np.sqrt(2*Sun.k/R_E)
-dv_escape = escape_v - norm(v_Earth)
+ss_A = Orbit.from_body_ephem(A)
+ss_B = Orbit.from_body_ephem(B)
+
+# Minimum Delta-V to reach Jupiter with Hohmann transfer
+hoh = Maneuver.hohmann(ss_A, norm(ss_B.r.to(u.m)))
+dv_min = hoh[0][1]
 
 # DeltaV of New Horizons mission
 dv_NH_1 = 16.26*u.km/u.s
+dv_NH_1 = 3.8*u.km/u.s
 
-ss_trans, t, T, t_trans = Earth_to_Jupiter(dv_NH_1)
+ss, t, T, t_trans = Tangent_burn(A, B, dv_NH_1)
 
 print("Time from now to the next launch window = %2.3f d" % t.to(u.d).value)
 print("Time between launch windows = %2.3f d" % T.to(u.d).value)
-print("Transfer time from Earth to Jupiter = %2.3f d" % t_trans.to(u.d).value)
+print("Transfer time from %s to %s = %2.3f d" % (A.name, B.name, t_trans.to(u.d).value))
 
 # Plotting
 fig, ax = plt.subplots()
 ax.grid(True)
-ax.set_title("Transfer orbit from Earth to Jupiter with deltaV = %2.2f Km/s" % dv_NH_1.value)
+ax.set_title("Transfer orbit from %s to %s with deltaV = %2.2f Km/s" % (A.name, B.name, dv_NH_1.value))
 
 op = OrbitPlotter(ax)
-op.plot(ss_Earth, label="Now")
-op.plot(ss_Jupiter, label="Now")
-op.plot(ss_trans, label="Now")
+op.plot(ss.A, label="Now")
+op.plot(ss.B, label="Now")
 
-op.plot(ss_Earth.propagate(t), label="At launch")
-op.plot(ss_Jupiter.propagate(t), label="At launch")
+op.plot(ss.A.propagate(t), label="At launch")
+op.plot(ss.B.propagate(t), label="At launch")
+op.plot(ss.trans, label="At launch")
 
-op.plot(ss_Earth.propagate(t + t_trans), label="At arrival")
-op.plot(ss_Jupiter.propagate(t + t_trans), label="At arrival")
-op.plot(ss_trans.propagate(t_trans), label="At arrival")
+op.plot(ss.A.propagate(t + t_trans), label="At arrival")
+op.plot(ss.B.propagate(t + t_trans), label="At arrival")
+op.plot(ss.trans.propagate(t_trans), label="At arrival")
 
 plt.show()
 
@@ -73,7 +74,7 @@ TT = np.zeros([len(dv),1]) # Transfer time
 total_time = np.zeros([1,len(dv)]) # Total time needed
 
 for i in range(len(dv)):
-	ss_trans, tt[i], T, TT[i] = Earth_to_Jupiter(dv[i])
+	ss, tt[i], T, TT[i] = Tangent_burn(A, B, dv[i])
 
 tt = (tt*u.s).to(u.d).value
 TT = (TT*u.s).to(u.d).value
